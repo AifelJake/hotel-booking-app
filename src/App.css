@@ -1,3 +1,16 @@
 .welcome {
     font-family: 'Source Serif Pro', serif;
 }
+
+.intro-description,
+.rooms-headline{
+    font-family: 'Scheherazade New', serif;
+}
+
+.rooms-headline {
+    text-shadow: 1px 1px 1px black;
+}
+
+.see-all-btn {
+    font-family: 'Noto Serif', serif;
+}
