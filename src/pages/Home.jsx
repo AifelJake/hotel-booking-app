@@ -6,6 +6,7 @@ import roomTwo from "../assets/img/room2.jpg"
 import roomThree from "../assets/img/room3.webp"
 import roomFour from "../assets/img/room4.jpeg"
 import roomFive from "../assets/img/room5.jpg"
+import hotelDining from "../assets/img/hotelDining.jpg"
 
 const Home = () => {
     return (
@@ -43,11 +44,11 @@ const Home = () => {
                         </div>
                     </div>
                     <div className='flex justify-center text-center'>
-                        <p className='w-[80%] text-[1.2em] intro-description'>A total of 113 cozy rooms with a spacious balcony, a view of infinity pool, and sea view that can absolutely make for a memorable, enjoyable and awesome stay. Each room exudes not only with the hotel’s gleaming aesthetic but also the modern comforts of a luxury hotel & resort. Awesome Hotel can ensure esteemed guests that they will undoubtedly feel relaxed and pampered throughout their stay. These amenities also help to create a luxurious atmosphere, which can make guests feel like they are truly on a special and memorable vacation.</p>
+                        <p className='w-[80%] text-[1.1em] intro-description'>A total of 113 cozy rooms with a spacious balcony, a view of infinity pool, and sea view that can absolutely make for a memorable, enjoyable and awesome stay. Each room exudes not only with the hotel’s gleaming aesthetic but also the modern comforts of a luxury hotel & resort. Awesome Hotel can ensure esteemed guests that they will undoubtedly feel relaxed and pampered throughout their stay. These amenities also help to create a luxurious atmosphere, which can make guests feel like they are truly on a special and memorable vacation.</p>
                     </div>
                 </div>
 
-                <div className='flex justify-evenly pt-[100px] mx-5'>
+                <div className='flex justify-evenly pt-[20px] mx-5'>
                     <div>
                         <img src={roomOne} className='h-[110%]' width="220" alt="" />
                     </div>
@@ -66,6 +67,39 @@ const Home = () => {
                 <div className='flex justify-center text-center pt-10  text-white'>
                     <p className='bg-black w-[150px] h-[30px] rounded-xl flex items-center justify-center see-all- btn italic  '>SEE ALL ROOMS</p>
                 </div>
+
+                <div className='flex pt-[30px] px-10'>
+                    <div className='flex items-center justify-center py-10'>
+                        <div className='w-[95%] border shadow-xl '>
+                            <img src={hotelDining} className='p-[30px] ' alt="" />
+                        </div>
+                    </div>
+
+                    <div className='flex justify-center items-center'>
+                        <div className='text-center  px-[60px]'>
+                            <h2 className='text-2xl font-bold'>HOTEL DINING</h2>
+                            <div className='flex justify-center py-2'>
+                                <div className='w-[70px] border-2 border-gold-200 border-t-[#FFD700] h-1'>
+
+                                </div>
+                            </div>
+
+                            <p className="dining-des text-center">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer vel sapien eget quam lobortis congue quis non nisi. Maecenas nec semper magna.
+                            </p>
+
+                            <p className="dining-des pt-2 text-center">Nam non purus placerat, lacinia lorem vel, vehicula massa. Nunc hendrerit pretium nisi quis gravida. Praesent ornare dictum est. Integer porta commodo ligula vel tempor. Donec at sapien ut mauris hendrerit blandit.
+                            </p>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div>
+                    <div></div>
+                    <div></div>
+                    <div></div>
+                </div>
+
             </div>
 
 
