@@ -7,6 +7,10 @@ import roomThree from "../assets/img/room3.webp"
 import roomFour from "../assets/img/room4.jpeg"
 import roomFive from "../assets/img/room5.jpg"
 import hotelDining from "../assets/img/hotelDining.jpg"
+import restaurant from "../assets/img/restaurant.jpg"
+import pastry from "../assets/img/pastry.png"
+import liquor from "../assets/img/liquor.jpg"
+import spoon from "../assets/img/spoon.png"
 
 const Home = () => {
     return (
@@ -27,7 +31,7 @@ const Home = () => {
                         <p className='w-[4.7em] pl-2 border-b-[2.5px] border-l-[2.5px] font-bold pt-8'><span className='text-[1.5em]'>A</span>wesome</p>
                     </div>
 
-                    <div className='bg-white w-[120px] ml-[25.5%] flex justify-center items-center '>
+                    <div className='bg-white w-[120px] ml-[24%] flex justify-center items-center '>
                         <div className='flex items-center'>
                             <p className=' w-[100%] items-center text-black h-[30px] text-l'>Book Now!</p>
                         </div>
@@ -68,10 +72,10 @@ const Home = () => {
                     <p className='bg-black w-[150px] h-[30px] rounded-xl flex items-center justify-center see-all- btn italic  '>SEE ALL ROOMS</p>
                 </div>
 
-                <div className='flex pt-[30px] px-10'>
-                    <div className='flex items-center justify-center py-10'>
-                        <div className='w-[95%] border shadow-xl '>
-                            <img src={hotelDining} className='p-[30px] ' alt="" />
+                <div className='flex pt-[30px] px-[70px]'>
+                    <div className='flex items-center w-[90%] h-[80vh] justify-center py-10'>
+                        <div className='w-[100%] h-[100%] flex items-center border shadow-xl '>
+                            <img src={hotelDining} className='p-[20px] h-[100%]' alt="" />
                         </div>
                     </div>
 
@@ -94,11 +98,90 @@ const Home = () => {
                     </div>
                 </div>
 
-                <div>
-                    <div></div>
-                    <div></div>
-                    <div></div>
+                {/* RESTAURANT, PASTRY, LIQOUR section */}
+                <div className='flex justify-center items-center pt-10'>
+                    <div className='h-[70vh] w-[30%] flex text-white items-end justify-end' style={{
+                        backgroundImage: `url(${restaurant})`,
+                        backgroundSize: 'cover',
+                        backgroundRepeat: 'no-repeat',
+                        backgroundPosition: 'center'
+                    }}>
+                        {/* <img src={spoon} alt="" /> */}
+                        <p className='restau-txt mr-20 mb-5 text-2xl italic'>RESTAURANT </p>
+
+                    </div>
+                    <div className='h-[70vh] w-[30%]     flex items-end justify-end' style={{
+                        backgroundImage: `url(${pastry})`,
+                        backgroundSize: 'cover',
+                        backgroundRepeat: 'no-repeat',
+                        backgroundPosition: 'center'
+                    }}>
+                        <p className='restau-txt mr-20 mb-5 text-2xl italic'>LOBBY CAFE</p>
+                    </div>
+                    <div className='h-[70vh] w-[30%] text-white flex items-end justify-end' style={{
+                        backgroundImage: `url(${liquor})`,
+                        backgroundSize: 'cover',
+                        backgroundRepeat: 'no-repeat',
+                        backgroundPosition: 'center'
+                    }}>
+                        <p className='restau-txt mr-10 mb-5 text-2xl italic'>SPORTS BAR</p>
+                    </div>
                 </div>
+
+
+                {/* FOOTER */}
+
+                <footer class="bg-black mt-12 dark:bg-gray-900">
+                    <div class="mx-auto w-full max-w-screen-xl p-4 py-6 lg:py-8">
+                        <div class="md:flex md:justify-between">
+                            <div class="mb-6 md:mb-0 flex justify-center items-center">
+                                <div className='text-white  text-center'>
+                                    <span class="self-center text-5xl font-semibold whitespace-nowrap text-white dark:text-white">AWH</span>
+                                    <p>Come and create memories with us.</p>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-8 sm:gap-6 sm:grid-cols-3">
+                                <div>
+                                    <h2 class="mb-6 text-sm font-semibold uppercase text-white dark:text-white">Resources</h2>
+                                    <ul class="text-gray-500 dark:text-gray-400 font-medium">
+                                        <li class="mb-4">
+                                            <a href="https://flowbite.com/" class="hover:underline">Flowbite</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://tailwindcss.com/" class="hover:underline">Tailwind CSS</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h2 class="mb-6 text-sm font-semibold uppercase text-white dark:text-white">Follow us</h2>
+                                    <ul class="text-gray-500 dark:text-gray-400 font-medium">
+                                        <li class="mb-4">
+                                            <a href="https://github.com/themesberg/flowbite" class="hover:underline ">Github</a>
+                                        </li>
+                                        <li>
+                                            <a href="https://discord.gg/4eeurUVvTy" class="hover:underline">Discord</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h2 class="mb-6 text-sm font-semibold uppercase text-white dark:text-white">Legal</h2>
+                                    <ul class="text-gray-500 dark:text-gray-400 font-medium">
+                                        <li class="mb-4">
+                                            <a href="#" class="hover:underline">Privacy Policy</a>
+                                        </li>
+                                        <li>
+                                            <a href="#" class="hover:underline">Terms &amp; Conditions</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <hr class="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8" />
+                        
+                    </div>
+                </footer>
+
+
 
             </div>
 
