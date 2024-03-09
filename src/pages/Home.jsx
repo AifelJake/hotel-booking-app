@@ -18,7 +18,7 @@ const Home = () => {
     return (
         <>
 
-            <div className=''>
+            <div className='mt-12'>
                 <div className=' h-[90vh] w-[100%] text-white' style={{
                     backgroundImage: `url(${bgHotel})`,
                     backgroundSize: 'cover',
@@ -70,8 +70,8 @@ const Home = () => {
                     </div>
                 </div>
 
-                <div className='flex justify-center text-center pt-10  text-white'>
-                    <p className='bg-black w-[150px] h-[30px] rounded-xl flex items-center justify-center see-all- btn italic  '>SEE ALL ROOMS</p>
+                <div className='flex justify-center text-center pt-11  text-white'>
+                    <p className='bg-[#A67B5B] w-[150px] h-[30px] rounded-xl flex items-center justify-center see-all- btn italic  '>SEE ALL ROOMS</p>
                 </div>
 
                 <div className='flex pt-[30px] px-[70px]'>
