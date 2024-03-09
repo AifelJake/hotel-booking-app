@@ -9,7 +9,7 @@ const initialState = {
     rooms: [],
     checkInDate: "",
     checkOutDate: "",
-    selectedRoom: null,
+    selectedRooms: [],
     numberOfChildren: 0,
     numberOfAdult: 0,
     error: false
@@ -27,18 +27,20 @@ const reducer = (state, action) => {
             return { ...state, checkInDate: action.payload };
         case 'SET_CHECK_OUT_DATE':
             return { ...state, checkOutDate: action.payload };
-        case 'SET_SELECTED_ROOM':
-            return { ...state, selectedRoom: action.payload };
+        case 'ADD_SELECTED_ROOM':
+            const newRoom = action.payload;
+            const updatedSelectedRooms = [...state.selectedRooms, newRoom];
+            return { ...state, selectedRooms: updatedSelectedRooms };
+        case 'REMOVE_SELECTED_ROOM':
+            const roomIdToRemove = action.payload;
+            const filteredSelectedRooms = state.selectedRooms.filter(room => room.id !== roomIdToRemove);
+            return { ...state, selectedRooms: filteredSelectedRooms };
+        case 'SET_NUMBER_OF_ADULTS':
+            return { ...state, numberOfAdults: action.payload };
+        case 'SET_NUMBER_OF_CHILDREN':
+            return { ...state, numberOfChildren: action.payload };
         case 'SET_ERROR':
             return { ...state, error: action.payload };
-        case 'ADD_CHILDREN_NUMBER':
-            return { ...state, numberOfChildren: state.numberOfChildren + 1 }
-        case 'DEDUCT_CHILDREN_NUMBER':
-            return { ...state, numberOfChildren: state.numberOfChildren - 1 }
-            case 'ADD_ADULT_NUMBER':
-            return { ...state, numberOfAdult: state.numberOfAdult + 1 }
-        case 'DEDUCT_ADULT_NUMBER':
-            return { ...state, numberOfAdult: state.numberOfAdult - 1 }
         default:
             return state
     }
@@ -54,7 +56,6 @@ const Room = () => {
             try {
                 const res = await axios.get("http://localhost:4002/product/all");
                 dispatch({ type: 'SHOW_ROOMS', payload: res.data });
-                console.log(res)
             } catch (error) {
                 dispatch({ type: 'SET_ERROR', payload: error.message });
             }
@@ -78,40 +79,50 @@ const Room = () => {
         fetchData();
     }, []);
 
+    const handleAdultsChange = (e) => {
+        dispatch({ type: 'SET_NUMBER_OF_ADULTS', payload: e.target.value });
+    };
+
+    const handleChildrenChange = (e) => {
+        dispatch({ type: 'SET_NUMBER_OF_CHILDREN', payload: e.target.value });
+    };
+
+    const handleRoomSelect = (id, name, image, price) => {
+        dispatch({ type: 'ADD_SELECTED_ROOM', payload: { id, name, image, price, quantity: 1 } });
+    };
+
+    const handleRoomDeselect = (id) => {
+        dispatch({ type: 'REMOVE_SELECTED_ROOM', payload: id });
+    };
 
     const bookRoom = async () => {
         try {
-
-            const { checkInDate, checkOutDate, selectedRoom } = state;
-            console.log(selectedRoom)
-            if (!checkInDate || !checkOutDate || !selectedRoom) {
-                dispatch({ type: 'SET_ERROR', payload: "Please select check-in and check-out dates and a room." });
+            const { checkInDate, checkOutDate, selectedRooms, numberOfAdults, numberOfChildren } = state;
+            if (!checkInDate || !checkOutDate || selectedRooms.length === 0) {
+                dispatch({ type: 'SET_ERROR', payload: "Please select check-in and check-out dates and at least one room." });
                 return;
             }
-
+    
             const payload = {
-                products: [{
-                    productId: selectedRoom.id,
-                    productName: selectedRoom.name,
-                    productImage: selectedRoom.image,
-                    price: selectedRoom.price,
-                    // numberOfAdults: selectedRoom.numberOfAdults,
-                    // numberOfChildren: selectedRoom.numberOfChildren,
-                    // checkIn: checkInDate,
-                    // checkOut: checkOutDate
-                }]
+                products: selectedRooms.map(room => ({
+                    productId: room.id,
+                    productName: room.name,
+                    productImage: room.image,
+                    price: room.price,
+                    numberOfAdults: numberOfAdults,
+                    numberOfChildren: numberOfChildren,
+                    checkIn: checkInDate,
+                    checkOut: checkOutDate
+                }))
             };
+    
             const res = await axios.post('http://localhost:4002/order/orders', payload);
             console.log(res.data);
-
         } catch (error) {
             console.log(error)
         }
     }
-
-    const selectRoom = (id, name, image, price) => {
-        dispatch({ type: 'SET_SELECTED_ROOM', payload: { id, name, image, price } });
-    }
+    
 
     useEffect(() => {
         console.log(state.selectedRoom);
@@ -160,7 +171,7 @@ const Room = () => {
 
                                 <div className='ml-auto'>
                                     <p className='font-bold '>PHP {room.price}</p>
-                                    <p className='bg-[#A67B5B] text-white rounded-md py-1.5 px-6' onClick={() => selectRoom(room._id, room.name, room.image, room.price)}>SELECT</p>
+                                    <p className='bg-[#A67B5B] text-white rounded-md py-1.5 px-6' onClick={() => handleRoomSelect(room._id, room.name, room.image, room.price)}>SELECT</p>
                                 </div>
                             </div>
 
@@ -180,21 +191,48 @@ const Room = () => {
             </div>
 
             {/* BOOKED/RESERVATION SECTION */}
-            <div className='min-w-[30%] h-[200px] flex justify-center items-center text-center border-red-gray border-2 p-4'>
-                <div className='pt-2  space-y-2'>
+            <div className='min-w-[30%] h-[250px] max-h-[100%] flex justify-center items-center text-center border-red-gray border-2'>
+                <div className='pt-2  space-y-2 '>
                     <div className='space-x-5 flex'>
                         <div>
                             <p className='font-bold'>Check-In Date</p>
-                            <input type="date" className='border-2' />
+                            <input type="date" className='border-2' onChange={(e) => dispatch({ type: 'SET_CHECK_IN_DATE', payload: e.target.value })} />
                         </div>
                         <div>
                             <p className='font-bold'>Check-Out Date</p>
-                            <input type="date" className='border-2' />
+                            <input type="date" className='border-2' onChange={(e) => dispatch({ type: 'SET_CHECK_OUT_DATE', payload: e.target.value })} />
                         </div>
                     </div>
-                    <p>1 Room, 2 guests</p>
+
+                    {/* number of children and adults section */}
+                    <div className='flex  justify-center'>
+                        <div className='w-[40px]'>
+                            <p>Adults:</p>
+                            <input type="number" name='adults' className='border-2 w-[40px]' onChange={handleAdultsChange} />
+                        </div>
+                        <div className=' w-[40px] ml-10'>
+                            <p>Children:</p>
+                            <input type="number" name='children' className='border-2 w-[40px]' onChange={handleChildrenChange} />
+                        </div>
+                    </div>
+
                     <hr />
                     <p className='font-bold'>SELECT A ROOM TO BOOK</p>
+
+                    {/* SECTION AFTER SELECTING A ROOM */}
+                    {state.selectedRooms.length > 0 && (
+                        <div>
+                            <p className='font-bold'>Selected Rooms:</p>
+                            {state.selectedRooms.map((room, index) => (
+                                <div key={index} className='flex justify-between items-center'>
+                                    <p>{room.name}</p>
+                                    <button onClick={() => handleRoomDeselect(room.id)}>Remove</button>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+
+
                     <div className='mt-6'>
                         <button className='bg-[#A67B5B] text-white font-bold w-[100%] rounded-md py-2' onClick={bookRoom}>
                             BOOK NOW
