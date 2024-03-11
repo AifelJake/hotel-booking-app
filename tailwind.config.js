@@ -10,6 +10,7 @@ export default {
         sans: ['Graphik', 'sans-serif'],
         serif: ['Merriweather', 'serif'],
         lato: ['Lato', 'sans-serif'],
+        roboto : ['Roboto', 'sans-serif'],
       },
     },
   },

@@ -16,7 +16,7 @@ const initialState = {
     checkOutDate: "",
     selectedRooms: [],
     numberOfChildren: 0,
-    numberOfAdult: 0,
+    numberOfAdults: 0,
     error: false
 };
 
@@ -94,8 +94,10 @@ const Room = () => {
     }, []);
 
     const handleAdultsChange = (e) => {
-        dispatch({ type: 'SET_NUMBER_OF_ADULTS', payload: e.target.value });
+        const numberOfAdults = parseInt(e.target.value);
+        dispatch({ type: 'SET_NUMBER_OF_ADULTS', payload: numberOfAdults });
     };
+    
 
     const handleChildrenChange = (e) => {
         dispatch({ type: 'SET_NUMBER_OF_CHILDREN', payload: e.target.value });
@@ -144,14 +146,14 @@ const Room = () => {
 
     const calculateTotalPrice = () => {
         const prices = state.selectedRooms.map(room => room.price);
-        
-        const totalPrice = prices.reduce((acc, currentValue ) => {
+
+        const totalPrice = prices.reduce((acc, currentValue) => {
             const num = parseFloat(currentValue.replace(',', ''))
             return acc + num
         }, 0);
         return totalPrice;
     };
-    
+
 
     const { showMore, error } = state;
 
@@ -242,26 +244,32 @@ const Room = () => {
 
                     <hr />
                     <p className='font-bold text-center'>SELECT A ROOM TO BOOK</p>
-                    <p className='font-bold'>Total Price: PHP {calculateTotalPrice()}</p>
+                    <p className='font-bold font-sans text-xl'>PHP {calculateTotalPrice()} total</p>
                     <div className='flex justify-center '>
                         {/* SECTION AFTER SELECTING A ROOM */}
                         {state.selectedRooms.length > 0 && (
                             <div className='w-[100%] font-lato '>
                                 {state.selectedRooms.map((room, index) => (
                                     <div key={index} className='flex items-center '>
+                                        <hr />
                                         <div className='w-[100%] space-y-2'>
                                             <div className='flex items-center'>
                                                 <p className='mr-auto font-bold text-1xl'>{room.name}</p>
                                                 <img src={bin} className='h-[20px]' onClick={() => handleRoomDeselect(room.id)} />
                                             </div>
                                             <p className='text-md font-lato'>Selected Room/s Details:</p>
-                                            <div className='text-gray-500'>
-                                                <div className='flex gap-5'>
-                                                    <p>Adult: {state.numberOfAdult}</p>
-                                                    <p>Children: {state.numberOfChildren}</p>
+                                            <div className=''>
+                                                <div className='flex text-gray-500 gap-5'>
+                                                    <p>Adult {state.numberOfAdults}</p>
+                                                    <p>Children {state.numberOfChildren}</p>
                                                 </div>
-                                                <p>-{room.bed}</p>
-                                                <p>-{room.bathroom} bathroom</p>
+                                                <div className='flex '>
+                                                    <div className='mr-auto text-gray-500'>
+                                                        <p>-{room.bed}</p>
+                                                        <p>-{room.bathroom} bathroom</p>
+                                                    </div>
+                                                    <div className='flex items-center justify-center font-bold text-md font-robot0'>{room.price}</div>
+                                                </div>
 
                                             </div>
                                             {/* Inclusion SECTION */}
@@ -276,16 +284,21 @@ const Room = () => {
                                             )}
                                             {/* End inclusion section */}
                                             <hr />
-                                        
+
 
                                         </div>
                                     </div>
                                 ))}
                             </div>
                         )}
-                        
+
                     </div>
-                    <p>Total Price: PHP {calculateTotalPrice()}</p>
+
+
+                    <div className='flex font-bold'>
+                        <p className='mr-auto'>Total Price: </p>
+                        <p>PHP {calculateTotalPrice()}</p>
+                    </div>
 
                     <div>
                         <button className='bg-[#A67B5B] text-white font-bold w-full rounded-md py-2' onClick={bookRoom}>
