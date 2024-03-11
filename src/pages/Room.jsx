@@ -7,6 +7,7 @@ import person from "../assets/img/person.png";
 import bathroom from "../assets/img/bathroom.png";
 import down from "../assets/img/down.png";
 import up from "../assets/img/up.png";
+import bin from "../assets/img/bin.png";
 
 const initialState = {
     showMore: false,
@@ -100,8 +101,8 @@ const Room = () => {
         dispatch({ type: 'SET_NUMBER_OF_CHILDREN', payload: e.target.value });
     };
 
-    const handleRoomSelect = (id, name, image, price, inclusions) => {
-        dispatch({ type: 'ADD_SELECTED_ROOM', payload: { id, name, image, price, inclusions, quantity: 1 } });
+    const handleRoomSelect = (id, name, image, price, inclusions, bed, bathroom) => {
+        dispatch({ type: 'ADD_SELECTED_ROOM', payload: { id, name, image, price, inclusions, bed, bathroom, quantity: 1 } });
     };
 
     const handleRoomInclusionToggle = (roomId) => {
@@ -140,6 +141,17 @@ const Room = () => {
             dispatch({ type: 'SET_ERROR', payload: error.message });
         }
     };
+
+    const calculateTotalPrice = () => {
+        const prices = state.selectedRooms.map(room => room.price);
+        
+        const totalPrice = prices.reduce((acc, currentValue ) => {
+            const num = parseFloat(currentValue.replace(',', ''))
+            return acc + num
+        }, 0);
+        return totalPrice;
+    };
+    
 
     const { showMore, error } = state;
 
@@ -183,13 +195,13 @@ const Room = () => {
 
                                 <div className='ml-auto'>
                                     <p className='font-bold '>PHP {room.price}</p>
-                                    <p className='bg-[#A67B5B] text-white rounded-md py-1.5 px-6' onClick={() => handleRoomSelect(room._id, room.name, room.image, room.price, room.moreDescription)}>SELECT</p>
+                                    <p className='bg-[#A67B5B] text-white rounded-md py-1.5 px-6' onClick={() => handleRoomSelect(room._id, room.name, room.image, room.price, room.moreDescription, room.bed, room.bathroom)}>SELECT</p>
                                 </div>
                             </div>
 
                             {showMore && (
                                 <>
-                                    <div onClick={() => dispatch({ type: 'TOGGLE_DESC' })} className='pr-[230px]'>
+                                    <div onClick={() => dispatch({ type: 'TOGGLE_DESC' })} className='mr-[320px]'>
                                         <p>{room.moreDescription}</p>
                                     </div>
                                     <button className='italic underline' onClick={() => dispatch({ type: 'TOGGLE_DESC' })}>
@@ -230,43 +242,50 @@ const Room = () => {
 
                     <hr />
                     <p className='font-bold text-center'>SELECT A ROOM TO BOOK</p>
-
-                    <div className='flex justify-center border-2'>
+                    <p className='font-bold'>Total Price: PHP {calculateTotalPrice()}</p>
+                    <div className='flex justify-center '>
                         {/* SECTION AFTER SELECTING A ROOM */}
                         {state.selectedRooms.length > 0 && (
-                            <div className='w-[100%]'>
+                            <div className='w-[100%] font-lato '>
                                 {state.selectedRooms.map((room, index) => (
                                     <div key={index} className='flex items-center '>
-                                        <div className='w-[100%]'>
-                                            <div className='flex '>
+                                        <div className='w-[100%] space-y-2'>
+                                            <div className='flex items-center'>
                                                 <p className='mr-auto font-bold text-1xl'>{room.name}</p>
-                                                <div onClick={() => handleRoomDeselect(room.id)}>delete</div>
+                                                <img src={bin} className='h-[20px]' onClick={() => handleRoomDeselect(room.id)} />
                                             </div>
-                                            <p className='text-md'>Selected Room/s Details:</p>
+                                            <p className='text-md font-lato'>Selected Room/s Details:</p>
+                                            <div className='text-gray-500'>
+                                                <div className='flex gap-5'>
+                                                    <p>Adult: {state.numberOfAdult}</p>
+                                                    <p>Children: {state.numberOfChildren}</p>
+                                                </div>
+                                                <p>-{room.bed}</p>
+                                                <p>-{room.bathroom} bathroom</p>
 
+                                            </div>
                                             {/* Inclusion SECTION */}
                                             <div className='flex items-center'>
-                                                <p className='text-md pr-5'>Room Inclusions</p>
-                                                <img src={room.showInclusion ? up : down} className='h-[20px]' onClick={() => handleRoomInclusionToggle(room.id)} alt="" />
+                                                <p className='text-md pr-5 font-lato'>Room Inclusions</p>
+                                                <img src={room.showInclusion ? up : down} className='min-h-[10px]' onClick={() => handleRoomInclusionToggle(room.id)} alt="" />
                                             </div>
                                             {room.showInclusion && (
-                                                <div onClick={() => handleRoomInclusionToggle(room.id)} className='pr-[230px]'>
+                                                <div onClick={() => handleRoomInclusionToggle(room.id)} className='pr-[175px]'>
                                                     <p>{room.inclusions}</p>
                                                 </div>
                                             )}
                                             {/* End inclusion section */}
+                                            <hr />
+                                        
 
-                                            <p className='font-bold text-xl '>Total Price: {room.price}</p>
-                                            <div className='flex justify-evenly '>
-                                                <p>Adult: {state.numberOfAdult}</p>
-                                                <p>Children: {state.numberOfChildren}</p>
-                                            </div>
                                         </div>
                                     </div>
                                 ))}
                             </div>
                         )}
+                        
                     </div>
+                    <p>Total Price: PHP {calculateTotalPrice()}</p>
 
                     <div>
                         <button className='bg-[#A67B5B] text-white font-bold w-full rounded-md py-2' onClick={bookRoom}>
