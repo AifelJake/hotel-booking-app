@@ -1,8 +1,12 @@
 import React, { useEffect, useReducer } from 'react';
 import axios from 'axios';
+
+// images import
 import bed from "../assets/img/bed.png";
 import person from "../assets/img/person.png";
 import bathroom from "../assets/img/bathroom.png";
+import down from "../assets/img/down.png";
+import up from "../assets/img/up.png";
 
 const initialState = {
     showMore: false,
@@ -19,16 +23,26 @@ const reducer = (state, action) => {
     switch (action.type) {
         case 'TOGGLE_DESC':
             return { ...state, showMore: !state.showMore };
+        case 'TOGGLE_INCLUSION':
+            const roomIdToToggle = action.payload;
+            const toggledSelectedRooms = state.selectedRooms.map(room => {
+                if (room.id === roomIdToToggle) {
+                    return { ...room, showInclusion: !room.showInclusion };
+                }
+                return room;
+            });
+            return { ...state, selectedRooms: toggledSelectedRooms };
         case 'FETCH_IMAGE':
             return { ...state, image: action.payload };
         case 'SHOW_ROOMS':
-            return { ...state, rooms: action.payload }
+            return { ...state, rooms: action.payload };
         case 'SET_CHECK_IN_DATE':
             return { ...state, checkInDate: action.payload };
         case 'SET_CHECK_OUT_DATE':
             return { ...state, checkOutDate: action.payload };
         case 'ADD_SELECTED_ROOM':
             const newRoom = action.payload;
+            newRoom.showInclusion = false; // Initialize showInclusion for the new room
             const updatedSelectedRooms = [...state.selectedRooms, newRoom];
             return { ...state, selectedRooms: updatedSelectedRooms };
         case 'REMOVE_SELECTED_ROOM':
@@ -42,13 +56,12 @@ const reducer = (state, action) => {
         case 'SET_ERROR':
             return { ...state, error: action.payload };
         default:
-            return state
+            return state;
     }
 }
 
 
 const Room = () => {
-
     const [state, dispatch] = useReducer(reducer, initialState);
 
     useEffect(() => {
@@ -59,7 +72,7 @@ const Room = () => {
             } catch (error) {
                 dispatch({ type: 'SET_ERROR', payload: error.message });
             }
-        }
+        };
 
         fetchData();
     }, []);
@@ -87,8 +100,12 @@ const Room = () => {
         dispatch({ type: 'SET_NUMBER_OF_CHILDREN', payload: e.target.value });
     };
 
-    const handleRoomSelect = (id, name, image, price) => {
-        dispatch({ type: 'ADD_SELECTED_ROOM', payload: { id, name, image, price, quantity: 1 } });
+    const handleRoomSelect = (id, name, image, price, inclusions) => {
+        dispatch({ type: 'ADD_SELECTED_ROOM', payload: { id, name, image, price, inclusions, quantity: 1 } });
+    };
+
+    const handleRoomInclusionToggle = (roomId) => {
+        dispatch({ type: 'TOGGLE_INCLUSION', payload: roomId });
     };
 
     const handleRoomDeselect = (id) => {
@@ -102,7 +119,7 @@ const Room = () => {
                 dispatch({ type: 'SET_ERROR', payload: "Please select check-in and check-out dates and at least one room." });
                 return;
             }
-    
+
             const payload = {
                 products: selectedRooms.map(room => ({
                     productId: room.id,
@@ -115,33 +132,28 @@ const Room = () => {
                     checkOut: checkOutDate
                 }))
             };
-    
+
             const res = await axios.post('http://localhost:4002/order/orders', payload);
             console.log(res.data);
         } catch (error) {
-            console.log(error)
+            console.log(error);
+            dispatch({ type: 'SET_ERROR', payload: error.message });
         }
-    }
-    
+    };
 
-    useEffect(() => {
-        console.log(state.selectedRoom);
-    }, [state.selectedRoom]);
-
-    const { showMore, rooms, checkInDate, checkOutDate, selectedRoom, error } = state;
+    const { showMore, error } = state;
 
     return (
-        <div className='px-[12%] flex  gap-3 mt-20'>
+        <div className='px-[12%] flex gap-3 mt-20'>
             {/* ROOM DETAILS */}
-            <div >
-
+            <div>
                 {state.rooms.map((room, id) => (
                     <div className='w-[100%] border p-2 shadow-md flex mb-5' key={id}>
                         <div className='w-30%'>
                             <img src={'http://localhost:4002/images/' + room.image} className='max-h-[270px] w-[220px]' alt="" />
                         </div>
 
-                        <div className='ml-5 w-[70%] py-3 px-2 space-y-2 ' >
+                        <div className='ml-5 w-[70%] py-3 px-2 space-y-2'>
                             <p className='text-2xl font-bold'>{room.name}</p>
 
                             {/* LOGOS */}
@@ -171,7 +183,7 @@ const Room = () => {
 
                                 <div className='ml-auto'>
                                     <p className='font-bold '>PHP {room.price}</p>
-                                    <p className='bg-[#A67B5B] text-white rounded-md py-1.5 px-6' onClick={() => handleRoomSelect(room._id, room.name, room.image, room.price)}>SELECT</p>
+                                    <p className='bg-[#A67B5B] text-white rounded-md py-1.5 px-6' onClick={() => handleRoomSelect(room._id, room.name, room.image, room.price, room.moreDescription)}>SELECT</p>
                                 </div>
                             </div>
 
@@ -191,8 +203,8 @@ const Room = () => {
             </div>
 
             {/* BOOKED/RESERVATION SECTION */}
-            <div className='min-w-[30%] h-[250px] max-h-[100%] flex justify-center items-center text-center border-red-gray border-2'>
-                <div className='pt-2  space-y-2 '>
+            <div className=''>
+                <div className='border-2 p-4 space-y-2'>
                     <div className='space-x-5 flex'>
                         <div>
                             <p className='font-bold'>Check-In Date</p>
@@ -205,7 +217,7 @@ const Room = () => {
                     </div>
 
                     {/* number of children and adults section */}
-                    <div className='flex  justify-center'>
+                    <div className='flex justify-center'>
                         <div className='w-[40px]'>
                             <p>Adults:</p>
                             <input type="number" name='adults' className='border-2 w-[40px]' onChange={handleAdultsChange} />
@@ -217,24 +229,47 @@ const Room = () => {
                     </div>
 
                     <hr />
-                    <p className='font-bold'>SELECT A ROOM TO BOOK</p>
+                    <p className='font-bold text-center'>SELECT A ROOM TO BOOK</p>
 
-                    {/* SECTION AFTER SELECTING A ROOM */}
-                    {state.selectedRooms.length > 0 && (
-                        <div>
-                            <p className='font-bold'>Selected Rooms:</p>
-                            {state.selectedRooms.map((room, index) => (
-                                <div key={index} className='flex justify-between items-center'>
-                                    <p>{room.name}</p>
-                                    <button onClick={() => handleRoomDeselect(room.id)}>Remove</button>
-                                </div>
-                            ))}
-                        </div>
-                    )}
+                    <div className='flex justify-center border-2'>
+                        {/* SECTION AFTER SELECTING A ROOM */}
+                        {state.selectedRooms.length > 0 && (
+                            <div className='w-[100%]'>
+                                {state.selectedRooms.map((room, index) => (
+                                    <div key={index} className='flex items-center '>
+                                        <div className='w-[100%]'>
+                                            <div className='flex '>
+                                                <p className='mr-auto font-bold text-1xl'>{room.name}</p>
+                                                <div onClick={() => handleRoomDeselect(room.id)}>delete</div>
+                                            </div>
+                                            <p className='text-md'>Selected Room/s Details:</p>
 
+                                            {/* Inclusion SECTION */}
+                                            <div className='flex items-center'>
+                                                <p className='text-md pr-5'>Room Inclusions</p>
+                                                <img src={room.showInclusion ? up : down} className='h-[20px]' onClick={() => handleRoomInclusionToggle(room.id)} alt="" />
+                                            </div>
+                                            {room.showInclusion && (
+                                                <div onClick={() => handleRoomInclusionToggle(room.id)} className='pr-[230px]'>
+                                                    <p>{room.inclusions}</p>
+                                                </div>
+                                            )}
+                                            {/* End inclusion section */}
 
-                    <div className='mt-6'>
-                        <button className='bg-[#A67B5B] text-white font-bold w-[100%] rounded-md py-2' onClick={bookRoom}>
+                                            <p className='font-bold text-xl '>Total Price: {room.price}</p>
+                                            <div className='flex justify-evenly '>
+                                                <p>Adult: {state.numberOfAdult}</p>
+                                                <p>Children: {state.numberOfChildren}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        )}
+                    </div>
+
+                    <div>
+                        <button className='bg-[#A67B5B] text-white font-bold w-full rounded-md py-2' onClick={bookRoom}>
                             BOOK NOW
                         </button>
                     </div>
@@ -242,7 +277,7 @@ const Room = () => {
                 </div>
             </div>
         </div>
-    )
+    );
 }
 
 export default Room;
