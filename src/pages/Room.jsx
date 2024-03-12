@@ -104,14 +104,8 @@ const Room = () => {
         dispatch({ type: 'SET_NUMBER_OF_CHILDREN', payload: e.target.value });
     };
 
-    const handleRoomSelect = (id, name, image, price, inclusions, bed, bathroom) => {
-        const { checkInDate, checkOutDate, numberOfAdults } = state;
-        if (!checkInDate || !checkOutDate || !numberOfAdults) {
-            dispatch({ type: 'SET_ERROR', payload: "Please fill in all required fields." });
-            return;
-        }
-        dispatch({ type: 'ADD_SELECTED_ROOM', payload: { id, name, image, price, inclusions, bed, bathroom, quantity: 1 } });
-    };
+    
+
 
     const handleRoomInclusionToggle = (roomId) => {
         dispatch({ type: 'TOGGLE_INCLUSION', payload: roomId });
@@ -168,8 +162,35 @@ const Room = () => {
         const oneDay = 24 * 60 * 60 * 1000;
         const startDate = new Date(checkInDate);
         const endDate = new Date(checkOutDate);
-        const duration = Math.round(Math.abs((startDate - endDate) / oneDay));
+        const duration = (endDate - startDate) / oneDay;
+        console.log(duration)
         return duration;
+    };
+
+    const handleRoomSelect = (id, name, image, price, inclusions, bed, bathroom) => {
+        const { checkInDate, checkOutDate, numberOfAdults } = state;
+        const errors = [];
+    
+        if (!checkInDate) {
+            errors.push("Please enter the check-in date.");
+        }
+        if (!checkOutDate) {
+            errors.push("Please enter the check-out date.");
+        }
+        if (!numberOfAdults) {
+            errors.push("Please enter the number of adults.");
+        }
+    
+        if( calculateStayDuration() <= 0 ) {
+            errors.push("The number of days is invalid please book atleast 1 day");
+        }
+    
+        if (errors.length === 0) {
+            dispatch({ type: 'ADD_SELECTED_ROOM', payload: { id, name, image, price, inclusions, bed, bathroom, quantity: 1 } });
+            dispatch({ type: 'SET_ERROR', payload: null }); // Reset error to null when there are no errors
+        } else {
+            dispatch({ type: 'SET_ERROR', payload: errors });
+        }
     };
 
 
@@ -242,12 +263,12 @@ const Room = () => {
                         <div>
                             <p className='font-bold'>Check-In Date</p>
                             <input type="date" className='border-2' onChange={(e) => dispatch({ type: 'SET_CHECK_IN_DATE', payload: e.target.value })} />
-                            {isSingleError && <p className="text-red-500">{error}</p>}
+                            
                         </div>
                         <div>
                             <p className='font-bold'>Check-Out Date</p>
                             <input type="date" className='border-2' onChange={(e) => dispatch({ type: 'SET_CHECK_OUT_DATE', payload: e.target.value })} />
-                            {isSingleError && <p className="text-red-500">{error}</p>}
+                            
                         </div>
                     </div>
 
@@ -338,6 +359,8 @@ const Room = () => {
                         <button className='bg-[#A67B5B] text-white font-bold w-full rounded-md py-2' onClick={bookRoom}>
                             BOOK NOW
                         </button>
+                        {!isSingleError && <p className="text-red-500">{error}</p>}
+
                     </div>
                   
                 </div>
