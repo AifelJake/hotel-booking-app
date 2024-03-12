@@ -17,7 +17,7 @@ const initialState = {
     selectedRooms: [],
     numberOfChildren: 0,
     numberOfAdults: 0,
-    error: false
+    error: null // Changed to null initially
 };
 
 const reducer = (state, action) => {
@@ -55,7 +55,8 @@ const reducer = (state, action) => {
         case 'SET_NUMBER_OF_CHILDREN':
             return { ...state, numberOfChildren: action.payload };
         case 'SET_ERROR':
-            return { ...state, error: action.payload };
+            return { ...state, error: action.payload }; // Update error directly
+
         default:
             return state;
     }
@@ -97,13 +98,18 @@ const Room = () => {
         const numberOfAdults = parseInt(e.target.value);
         dispatch({ type: 'SET_NUMBER_OF_ADULTS', payload: numberOfAdults });
     };
-    
+
 
     const handleChildrenChange = (e) => {
         dispatch({ type: 'SET_NUMBER_OF_CHILDREN', payload: e.target.value });
     };
 
     const handleRoomSelect = (id, name, image, price, inclusions, bed, bathroom) => {
+        const { checkInDate, checkOutDate, numberOfAdults } = state;
+        if (!checkInDate || !checkOutDate || !numberOfAdults) {
+            dispatch({ type: 'SET_ERROR', payload: "Please fill in all required fields." });
+            return;
+        }
         dispatch({ type: 'ADD_SELECTED_ROOM', payload: { id, name, image, price, inclusions, bed, bathroom, quantity: 1 } });
     };
 
@@ -154,8 +160,21 @@ const Room = () => {
         return totalPrice;
     };
 
+    const calculateStayDuration = () => {
+
+        const { checkInDate, checkOutDate } = state;
+
+
+        const oneDay = 24 * 60 * 60 * 1000;
+        const startDate = new Date(checkInDate);
+        const endDate = new Date(checkOutDate);
+        const duration = Math.round(Math.abs((startDate - endDate) / oneDay));
+        return duration;
+    };
+
 
     const { showMore, error } = state;
+    const isSingleError = error && !Array.isArray(error);
 
     return (
         <div className='px-[12%] flex gap-3 mt-20'>
@@ -217,16 +236,18 @@ const Room = () => {
             </div>
 
             {/* BOOKED/RESERVATION SECTION */}
-            <div className=''>
-                <div className='border-2 p-4 space-y-2'>
-                    <div className='space-x-5 flex'>
+            <div className='max-w-[30%] '>
+                <div className='border-2 p-4 min-w-[100%] max-w-[100%] space-y-2'>
+                    <div className='space-x-5 flex min-w-[100%] max-w-[100%]'>
                         <div>
                             <p className='font-bold'>Check-In Date</p>
                             <input type="date" className='border-2' onChange={(e) => dispatch({ type: 'SET_CHECK_IN_DATE', payload: e.target.value })} />
+                            {isSingleError && <p className="text-red-500">{error}</p>}
                         </div>
                         <div>
                             <p className='font-bold'>Check-Out Date</p>
                             <input type="date" className='border-2' onChange={(e) => dispatch({ type: 'SET_CHECK_OUT_DATE', payload: e.target.value })} />
+                            {isSingleError && <p className="text-red-500">{error}</p>}
                         </div>
                     </div>
 
@@ -235,20 +256,31 @@ const Room = () => {
                         <div className='w-[40px]'>
                             <p>Adults:</p>
                             <input type="number" name='adults' className='border-2 w-[40px]' onChange={handleAdultsChange} />
+                            
                         </div>
                         <div className=' w-[40px] ml-10'>
                             <p>Children:</p>
                             <input type="number" name='children' className='border-2 w-[40px]' onChange={handleChildrenChange} />
                         </div>
                     </div>
+                    {isSingleError && <p className="text-red-500 text-center">{error}</p>}
 
                     <hr />
                     <p className='font-bold text-center'>SELECT A ROOM TO BOOK</p>
-                    <p className='font-bold font-sans text-xl'>PHP {calculateTotalPrice()} total</p>
+
+
+
                     <div className='flex justify-center '>
                         {/* SECTION AFTER SELECTING A ROOM */}
                         {state.selectedRooms.length > 0 && (
                             <div className='w-[100%] font-lato '>
+                                <p className='font-bold font-sans text-xl'>PHP {calculateTotalPrice()} total</p>
+                                <div className='flex text-gray-500 gap-2'>
+                                    <p>{calculateStayDuration()} day/s</p>
+                                    <p>Adult {state.numberOfAdults}</p>
+                                    <p>Children {state.numberOfChildren}</p>
+
+                                </div>
                                 {state.selectedRooms.map((room, index) => (
                                     <div key={index} className='flex items-center '>
                                         <hr />
@@ -257,28 +289,26 @@ const Room = () => {
                                                 <p className='mr-auto font-bold text-1xl'>{room.name}</p>
                                                 <img src={bin} className='h-[20px]' onClick={() => handleRoomDeselect(room.id)} />
                                             </div>
+
                                             <p className='text-md font-lato'>Selected Room/s Details:</p>
                                             <div className=''>
-                                                <div className='flex text-gray-500 gap-5'>
-                                                    <p>Adult {state.numberOfAdults}</p>
-                                                    <p>Children {state.numberOfChildren}</p>
-                                                </div>
+
                                                 <div className='flex '>
                                                     <div className='mr-auto text-gray-500'>
                                                         <p>-{room.bed}</p>
                                                         <p>-{room.bathroom} bathroom</p>
                                                     </div>
-                                                    <div className='flex items-center justify-center font-bold text-md font-robot0'>{room.price}</div>
+                                                    <div className='flex items-center justify-center font-bold text-md font-roboto'>{room.price}</div>
                                                 </div>
 
                                             </div>
                                             {/* Inclusion SECTION */}
-                                            <div className='flex items-center'>
+                                            <div className='flex items-center '>
                                                 <p className='text-md pr-5 font-lato'>Room Inclusions</p>
                                                 <img src={room.showInclusion ? up : down} className='min-h-[10px]' onClick={() => handleRoomInclusionToggle(room.id)} alt="" />
                                             </div>
                                             {room.showInclusion && (
-                                                <div onClick={() => handleRoomInclusionToggle(room.id)} className='pr-[175px]'>
+                                                <div onClick={() => handleRoomInclusionToggle(room.id)} className='pr-[150px]'>
                                                     <p>{room.inclusions}</p>
                                                 </div>
                                             )}
@@ -288,24 +318,28 @@ const Room = () => {
 
                                         </div>
                                     </div>
+
                                 ))}
+
+                                <div className='flex font-bold'>
+                                    <p className='mr-auto'>Total Price: </p>
+                                    <p>PHP {calculateTotalPrice()}</p>
+
+                                </div>
                             </div>
                         )}
 
                     </div>
 
 
-                    <div className='flex font-bold'>
-                        <p className='mr-auto'>Total Price: </p>
-                        <p>PHP {calculateTotalPrice()}</p>
-                    </div>
+
 
                     <div>
                         <button className='bg-[#A67B5B] text-white font-bold w-full rounded-md py-2' onClick={bookRoom}>
                             BOOK NOW
                         </button>
                     </div>
-                    {error && <p className="text-red-500">{error}</p>}
+                  
                 </div>
             </div>
         </div>
