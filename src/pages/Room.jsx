@@ -8,6 +8,8 @@ import bathroom from "../assets/img/bathroom.png";
 import down from "../assets/img/down.png";
 import up from "../assets/img/up.png";
 import bin from "../assets/img/bin.png";
+import bgBooking from "../assets/img/bgBooking.jpg"
+import frontBg from "../assets/img/frontBg.jpg"
 
 const initialState = {
     showMore: false,
@@ -104,7 +106,7 @@ const Room = () => {
         dispatch({ type: 'SET_NUMBER_OF_CHILDREN', payload: e.target.value });
     };
 
-    
+
 
 
     const handleRoomInclusionToggle = (roomId) => {
@@ -170,7 +172,7 @@ const Room = () => {
     const handleRoomSelect = (id, name, image, price, inclusions, bed, bathroom) => {
         const { checkInDate, checkOutDate, numberOfAdults } = state;
         const errors = [];
-    
+
         if (!checkInDate) {
             errors.push("Please enter the check-in date.");
         }
@@ -180,11 +182,11 @@ const Room = () => {
         if (!numberOfAdults) {
             errors.push("Please enter the number of adults.");
         }
-    
-        if( calculateStayDuration() <= 0 ) {
+
+        if (calculateStayDuration() <= 0) {
             errors.push("The number of days is invalid please book atleast 1 day");
         }
-    
+
         if (errors.length === 0) {
             dispatch({ type: 'ADD_SELECTED_ROOM', payload: { id, name, image, price, inclusions, bed, bathroom, quantity: 1 } });
             dispatch({ type: 'SET_ERROR', payload: null }); // Reset error to null when there are no errors
@@ -194,178 +196,301 @@ const Room = () => {
     };
 
 
-    const { showMore, error } = state;
+    const formatDateString = (dateString) => {
+        const date = new Date(dateString);
+        const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        const dayOfWeek = days[date.getDay()];
+        const dayOfMonth = date.getDate();
+        const month = months[date.getMonth()];
+        const year = date.getFullYear().toString().slice(-2);
+        return `${dayOfWeek}, ${dayOfMonth} ${month} ${year}`;
+    };
+
+    const formatCheckInOutDates = () => {
+        const { checkInDate, checkOutDate } = state;
+        const formattedCheckInDate = formatDateString(checkInDate);
+        const formattedCheckOutDate = formatDateString(checkOutDate);
+        return `${formattedCheckInDate} – ${formattedCheckOutDate}`;
+    };
+
+    const { showMore, error, checkInDate, checkOutDate, numberOfAdults, numberOfChildren } = state;
     const isSingleError = error && !Array.isArray(error);
 
+
     return (
-        <div className='px-[12%] flex gap-3 mt-20'>
-            {/* ROOM DETAILS */}
-            <div>
-                {state.rooms.map((room, id) => (
-                    <div className='w-[100%] border p-2 shadow-md flex mb-5' key={id}>
-                        <div className='w-30%'>
-                            <img src={'http://localhost:4002/images/' + room.image} className='max-h-[270px] w-[220px]' alt="" />
-                        </div>
+        <>
 
-                        <div className='ml-5 w-[70%] py-3 px-2 space-y-2'>
-                            <p className='text-2xl font-bold'>{room.name}</p>
+            {/* choosing dates and numbers section */}
+            <div className='flex '>
+                <div className='w-[50%] h-[40vh]' style={{
+                    backgroundImage: `url(${bgBooking})`,
+                    backgroundSize: 'cover',
+                    backgroundRepeat: 'no-repeat',
+                    backgroundPosition: 'center'
+                }}>
+                </div>
+                <div className='w-[50%] h-[40vh]' style={{
+                    backgroundImage: `url(${frontBg})`,
+                    backgroundSize: 'cover',
+                    backgroundRepeat: 'no-repeat',
+                    backgroundPosition: 'center'
+                }}>
 
-                            {/* LOGOS */}
-                            <div className='flex items-center gap-3'>
-                                <div className='flex items-center gap-1'>
-                                    <img src={person} className='h-[18px]' alt="person logo" />
-                                    <p>{room.person} sleeps</p>
-                                </div>
-                                <div className='flex items-center gap-1'>
-                                    <img src={bed} className='h-[20px]' alt="bed logo" />
-                                    <p>{room.bed}</p>
-                                </div>
-                                <div className='flex gap-1'>
-                                    <img src={bathroom} className='h-[20px]' alt="bath tub" />
-                                    <p>{room.bathroom} bathroom</p>
-                                </div>
-                            </div>
+                </div>
 
-                            {/* Show more */}
-                            <p>{room.description}</p>
-                            <div className='flex'>
-                                {!showMore && (
-                                    <button className='italic underline' onClick={() => dispatch({ type: 'TOGGLE_DESC' })}>
-                                        See More
-                                    </button>
-                                )}
-
-                                <div className='ml-auto'>
-                                    <p className='font-bold '>PHP {room.price}</p>
-                                    <p className='bg-[#A67B5B] text-white rounded-md py-1.5 px-6' onClick={() => handleRoomSelect(room._id, room.name, room.image, room.price, room.moreDescription, room.bed, room.bathroom)}>SELECT</p>
-                                </div>
-                            </div>
-
-                            {showMore && (
-                                <>
-                                    <div onClick={() => dispatch({ type: 'TOGGLE_DESC' })} className='mr-[320px]'>
-                                        <p>{room.moreDescription}</p>
-                                    </div>
-                                    <button className='italic underline' onClick={() => dispatch({ type: 'TOGGLE_DESC' })}>
-                                        See Less
-                                    </button>
-                                </>
-                            )}
-                        </div>
-                    </div>
-                ))}
             </div>
 
-            {/* BOOKED/RESERVATION SECTION */}
-            <div className='max-w-[30%] '>
-                <div className='border-2 p-4 min-w-[100%] max-w-[100%] space-y-2'>
-                    <div className='space-x-5 flex min-w-[100%] max-w-[100%]'>
-                        <div>
-                            <p className='font-bold'>Check-In Date</p>
-                            <input type="date" className='border-2' onChange={(e) => dispatch({ type: 'SET_CHECK_IN_DATE', payload: e.target.value })} />
-                            
-                        </div>
-                        <div>
-                            <p className='font-bold'>Check-Out Date</p>
-                            <input type="date" className='border-2' onChange={(e) => dispatch({ type: 'SET_CHECK_OUT_DATE', payload: e.target.value })} />
-                            
-                        </div>
+
+            {/* input section for booking */}
+            <div className='flex justify-center  mt-[-20px] '>
+                <div className='w-[50%] h-[13vh] justify-evenly items-center border-2 border-[#A67B5B] rounded  bg-white flex pb-2'>
+                    <div className='w-[30%] '>
+                        <p className='font-lato text-[0.8em]'>Check-In Date</p>
+                        <input
+                            type="date"
+                            className='border-2 w-[100%] h-[35px]'
+                            onChange={(e) => {
+                                const selectedCheckInDate = new Date(e.target.value);
+                                const nextDay = new Date(selectedCheckInDate);
+                                nextDay.setDate(selectedCheckInDate.getDate() + 1); // Increment the selected check-in date by 1 day
+
+                                // Set the minimum date for check-out to the next day after the selected check-in date
+                                document.getElementById('checkOutDate').setAttribute('min', nextDay.toISOString().split('T')[0]);
+
+                                dispatch({ type: 'SET_CHECK_IN_DATE', payload: e.target.value });
+                            }}
+                            id="checkInDate" // Add an id to the check-in date input
+                        />
+
+
+                    </div>
+                    <div className='w-[30%] '>
+                        <p className='font-lato text-[0.8em]'>Check-Out Date</p>
+                        <input
+                            type="date"
+                            className='border-2 w-[100%] h-[35px]'
+                            onChange={(e) => {
+                                const selectedCheckOutDate = new Date(e.target.value);
+                                const selectedCheckInDate = new Date(state.checkInDate);
+
+                                // Check if the selected check-out date is the same as or before the selected check-in date
+                                if (selectedCheckOutDate <= selectedCheckInDate) {
+                                    // Set the check-out date to the next day after the selected check-in date
+                                    const nextDay = new Date(selectedCheckInDate);
+                                    nextDay.setDate(selectedCheckInDate.getDate() + 1);
+                                    e.target.value = nextDay.toISOString().split('T')[0];
+                                }
+
+                                dispatch({ type: 'SET_CHECK_OUT_DATE', payload: e.target.value });
+                            }}
+                            id="checkOutDate" // Add an id to the check-out date input
+                        />
+
+
                     </div>
 
-                    {/* number of children and adults section */}
-                    <div className='flex justify-center'>
+                    <div className='flex text-[0.8em]'>
                         <div className='w-[40px]'>
                             <p>Adults:</p>
-                            <input type="number" name='adults' className='border-2 w-[40px]' onChange={handleAdultsChange} />
-                            
+                            <input type="number" name='adults' className='border-2 w-[40px] h-[35px]' onChange={handleAdultsChange} />
+
                         </div>
                         <div className=' w-[40px] ml-10'>
                             <p>Children:</p>
-                            <input type="number" name='children' className='border-2 w-[40px]' onChange={handleChildrenChange} />
+                            <input type="number" name='children' className='border-2 w-[40px] h-[35px]' onChange={handleChildrenChange} />
                         </div>
                     </div>
-                    {isSingleError && <p className="text-red-500 text-center">{error}</p>}
-
-                    <hr />
-                    <p className='font-bold text-center'>SELECT A ROOM TO BOOK</p>
-
-
-
-                    <div className='flex justify-center '>
-                        {/* SECTION AFTER SELECTING A ROOM */}
-                        {state.selectedRooms.length > 0 && (
-                            <div className='w-[100%] font-lato '>
-                                <p className='font-bold font-sans text-xl'>PHP {calculateTotalPrice()} total</p>
-                                <div className='flex text-gray-500 gap-2'>
-                                    <p>{calculateStayDuration()} day/s</p>
-                                    <p>Adult {state.numberOfAdults}</p>
-                                    <p>Children {state.numberOfChildren}</p>
-
-                                </div>
-                                {state.selectedRooms.map((room, index) => (
-                                    <div key={index} className='flex items-center '>
-                                        <hr />
-                                        <div className='w-[100%] space-y-2'>
-                                            <div className='flex items-center'>
-                                                <p className='mr-auto font-bold text-1xl'>{room.name}</p>
-                                                <img src={bin} className='h-[20px]' onClick={() => handleRoomDeselect(room.id)} />
-                                            </div>
-
-                                            <p className='text-md font-lato'>Selected Room/s Details:</p>
-                                            <div className=''>
-
-                                                <div className='flex '>
-                                                    <div className='mr-auto text-gray-500'>
-                                                        <p>-{room.bed}</p>
-                                                        <p>-{room.bathroom} bathroom</p>
-                                                    </div>
-                                                    <div className='flex items-center justify-center font-bold text-md font-roboto'>{room.price}</div>
-                                                </div>
-
-                                            </div>
-                                            {/* Inclusion SECTION */}
-                                            <div className='flex items-center '>
-                                                <p className='text-md pr-5 font-lato'>Room Inclusions</p>
-                                                <img src={room.showInclusion ? up : down} className='min-h-[10px]' onClick={() => handleRoomInclusionToggle(room.id)} alt="" />
-                                            </div>
-                                            {room.showInclusion && (
-                                                <div onClick={() => handleRoomInclusionToggle(room.id)} className='pr-[150px]'>
-                                                    <p>{room.inclusions}</p>
-                                                </div>
-                                            )}
-                                            {/* End inclusion section */}
-                                            <hr />
-
-
-                                        </div>
-                                    </div>
-
-                                ))}
-
-                                <div className='flex font-bold'>
-                                    <p className='mr-auto'>Total Price: </p>
-                                    <p>PHP {calculateTotalPrice()}</p>
-
-                                </div>
-                            </div>
-                        )}
-
-                    </div>
-
-
-
-
-                    <div>
-                        <button className='bg-[#A67B5B] text-white font-bold w-full rounded-md py-2' onClick={bookRoom}>
-                            BOOK NOW
-                        </button>
-                        {!isSingleError && <p className="text-red-500">{error}</p>}
-
-                    </div>
-                  
                 </div>
             </div>
-        </div>
+            {/* end */}
+
+
+            <div className='px-[12%] flex gap-3 mt-20'>
+
+                {/* ROOM DETAILS */}
+                <div>
+                    {state.rooms.map((room, id) => (
+                        <div className='w-[100%] border p-2 shadow-md flex mb-5' key={id}>
+                            <div className='w-30%'>
+                                <img src={'http://localhost:4002/images/' + room.image} className='max-h-[270px] w-[220px]' alt="" />
+                            </div>
+
+                            <div className='ml-5 w-[70%] py-3 px-2 space-y-2'>
+                                <p className='text-2xl font-bold'>{room.name}</p>
+
+                                {/* LOGOS */}
+                                <div className='flex items-center gap-3'>
+                                    <div className='flex items-center gap-1'>
+                                        <img src={person} className='h-[18px]' alt="person logo" />
+                                        <p>{room.person} sleeps</p>
+                                    </div>
+                                    <div className='flex items-center gap-1'>
+                                        <img src={bed} className='h-[20px]' alt="bed logo" />
+                                        <p>{room.bed}</p>
+                                    </div>
+                                    <div className='flex gap-1'>
+                                        <img src={bathroom} className='h-[20px]' alt="bath tub" />
+                                        <p>{room.bathroom} bathroom</p>
+                                    </div>
+                                </div>
+
+                                {/* Show more */}
+                                <p>{room.description}</p>
+                                <div className='flex'>
+                                    {!showMore && (
+                                        <button className='italic underline' onClick={() => dispatch({ type: 'TOGGLE_DESC' })}>
+                                            See More
+                                        </button>
+                                    )}
+
+                                    <div className='ml-auto'>
+                                        <p className='font-bold '>PHP {room.price}</p>
+                                        <p className='bg-[#A67B5B] text-white rounded-md py-1.5 px-6' onClick={() => handleRoomSelect(room._id, room.name, room.image, room.price, room.moreDescription, room.bed, room.bathroom)}>SELECT</p>
+                                    </div>
+                                </div>
+
+                                {showMore && (
+                                    <>
+                                        <div onClick={() => dispatch({ type: 'TOGGLE_DESC' })} className='mr-[320px]'>
+                                            <p>{room.moreDescription}</p>
+                                        </div>
+                                        <button className='italic underline' onClick={() => dispatch({ type: 'TOGGLE_DESC' })}>
+                                            See Less
+                                        </button>
+                                    </>
+                                )}
+                            </div>
+                        </div>
+                    ))}
+                </div>
+
+                {/* BOOKED/RESERVATION SECTION */}
+                <div className='min-w-[30%]'>
+                    <div className='border-2 p-4 min-w-[100%] max-w-[100%] space-y-2'>
+                        <div className='space-x-5 flex min-w-[100%] max-w-[100%]'>
+                            <div className='flex w-[100%]'>
+                                <div className='w-[83%]'>
+                                    {
+                                        checkInDate && checkOutDate ? (
+                                            <>
+                                                <p>{formatCheckInOutDates()}</p>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <p className='text-red-500'>Please choose check-in and check-out dates above</p>
+                                            </>
+                                        )
+                                    }
+                                </div>
+
+
+                                {
+                                    checkInDate && checkOutDate && calculateStayDuration() >= 1 ? (
+                                        <>
+                                            <div className='flex justify-end w-[17%]'>
+                                                <p>{calculateStayDuration()} night</p>
+                                            </div>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <p></p>
+                                        </>
+                                    )
+                                }
+
+                            </div>
+                        </div>
+
+
+                        {/* number of children and adults section */}
+                        <div className='flex gap-2'>
+                            <p>Adult {state.numberOfAdults} -</p>
+                            <p>Children {state.numberOfChildren}</p>
+                        </div>
+                        {isSingleError && <p className="text-red-500 text-center">{error}</p>}
+
+                        <hr />
+                        <p className='font-bold text-center'>SELECT A ROOM TO BOOK</p>
+
+
+
+                        <div className='flex justify-center '>
+                            {/* SECTION AFTER SELECTING A ROOM */}
+                            {state.selectedRooms.length > 0 && (
+                                <div className='w-[100%] font-lato '>
+                                    <p className='font-bold font-sans text-xl'>PHP {calculateTotalPrice()} total</p>
+                                    <div className='flex text-gray-500 gap-2'>
+                                        <p>{calculateStayDuration()} day/s</p>
+
+
+                                    </div>
+                                    {state.selectedRooms.map((room, index) => (
+                                        <div key={index} className='flex items-center '>
+                                            <hr />
+                                            <div className='w-[100%] space-y-2'>
+                                                <div className='flex items-center'>
+                                                    <p className='mr-auto font-bold text-1xl'>{room.name}</p>
+                                                    <img src={bin} className='h-[20px]' onClick={() => handleRoomDeselect(room.id)} />
+                                                </div>
+
+                                                <p className='text-md font-lato'>Selected Room/s Details:</p>
+                                                <div className=''>
+
+                                                    <div className='flex '>
+                                                        <div className='mr-auto text-gray-500'>
+                                                            <p>-{room.bed}</p>
+                                                            <p>-{room.bathroom} bathroom</p>
+                                                        </div>
+                                                        <div className='flex items-center justify-center font-bold text-md font-roboto'>{room.price}</div>
+                                                    </div>
+
+                                                </div>
+                                                {/* Inclusion SECTION */}
+                                                <div className='flex items-center '>
+                                                    <p className='text-md pr-5 font-lato'>Room Inclusions</p>
+                                                    <img src={room.showInclusion ? up : down} className='min-h-[10px]' onClick={() => handleRoomInclusionToggle(room.id)} alt="" />
+                                                </div>
+                                                {room.showInclusion && (
+                                                    <div onClick={() => handleRoomInclusionToggle(room.id)} className='pr-[150px]'>
+                                                        <p>{room.inclusions}</p>
+                                                    </div>
+                                                )}
+                                                {/* End inclusion section */}
+                                                <hr />
+
+
+                                            </div>
+                                        </div>
+
+                                    ))}
+
+                                    <div className='flex font-bold'>
+                                        <p className='mr-auto'>Total Price: </p>
+                                        <p>PHP {calculateTotalPrice()}</p>
+
+                                    </div>
+                                </div>
+                            )}
+
+                        </div>
+
+
+
+
+                        <div>
+                            <button className='bg-[#A67B5B] text-white font-bold w-full rounded-md py-2' onClick={bookRoom}>
+                                BOOK NOW
+                            </button>
+                            {!isSingleError && <p className="text-red-500">{error}</p>}
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </>
     );
 }
 
