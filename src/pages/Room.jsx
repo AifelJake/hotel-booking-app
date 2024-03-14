@@ -11,6 +11,8 @@ import bin from "../assets/img/bin.png";
 import bgBooking from "../assets/img/bgBooking.jpg"
 import frontBg from "../assets/img/frontBg.jpg"
 
+import ShowRoom from '../components/ShowRoom';
+
 const initialState = {
     showMore: false,
     rooms: [],
@@ -19,6 +21,7 @@ const initialState = {
     selectedRooms: [],
     numberOfChildren: 0,
     numberOfAdults: 0,
+    showModal: false,
     error: null // Changed to null initially
 };
 
@@ -35,6 +38,11 @@ const reducer = (state, action) => {
                 return room;
             });
             return { ...state, selectedRooms: toggledSelectedRooms };
+        case 'SHOW_ROOM_MODAL':
+            return { ...state, showModal: !state.showModal, selectedRoomImage: action.payload };
+        case 'TOGGLE_GLOBAL_MODAL':
+            return { ...state, showModal: !state.showModal };
+
         case 'FETCH_IMAGE':
             return { ...state, image: action.payload };
         case 'SHOW_ROOMS':
@@ -107,7 +115,9 @@ const Room = () => {
     };
 
 
-
+    const handleShowModal = (imageUrl) => {
+        dispatch({ type: 'SHOW_ROOM_MODAL', payload: imageUrl });
+    }
 
     const handleRoomInclusionToggle = (roomId) => {
         dispatch({ type: 'TOGGLE_INCLUSION', payload: roomId });
@@ -125,6 +135,8 @@ const Room = () => {
                 return;
             }
 
+            const token = localStorage.getItem("token"); // Retrieve the token from localStorage
+
             const payload = {
                 products: selectedRooms.map(room => ({
                     productId: room.id,
@@ -138,13 +150,18 @@ const Room = () => {
                 }))
             };
 
-            const res = await axios.post('http://localhost:4002/order/orders', payload);
+            const res = await axios.post('http://localhost:4002/order/orders', payload, {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
             console.log(res.data);
         } catch (error) {
             console.log(error);
             dispatch({ type: 'SET_ERROR', payload: error.message });
         }
     };
+
 
     const calculateTotalPrice = () => {
         const prices = state.selectedRooms.map(room => room.price);
@@ -214,7 +231,7 @@ const Room = () => {
         return `${formattedCheckInDate} – ${formattedCheckOutDate}`;
     };
 
-    const { showMore, error, checkInDate, checkOutDate, numberOfAdults, numberOfChildren } = state;
+    const { showMore, error, checkInDate, checkOutDate, numberOfAdults, numberOfChildren, showModal } = state;
     const isSingleError = error && !Array.isArray(error);
 
 
@@ -312,8 +329,15 @@ const Room = () => {
                 <div>
                     {state.rooms.map((room, id) => (
                         <div className='w-[100%] border p-2 shadow-md flex mb-5' key={id}>
-                            <div className='w-30%'>
-                                <img src={'http://localhost:4002/images/' + room.image} className='max-h-[270px] w-[220px]' alt="" />
+                            <div className='w-30% '>
+                                <img
+                                    src={'http://localhost:4002/images/' + room.image}
+                                    className='max-h-[270px] w-[220px]'
+                                    alt=""
+                                    onClick={() => handleShowModal('http://localhost:4002/images/' + room.image)}
+                                />
+
+
                             </div>
 
                             <div className='ml-5 w-[70%] py-3 px-2 space-y-2'>
@@ -426,8 +450,6 @@ const Room = () => {
                                 <div className='w-[100%] font-lato '>
                                     <p className='font-bold font-sans text-xl'>PHP {calculateTotalPrice()} total</p>
                                     <div className='flex text-gray-500 gap-2'>
-                                        <p>{calculateStayDuration()} day/s</p>
-
 
                                     </div>
                                     {state.selectedRooms.map((room, index) => (
@@ -494,6 +516,15 @@ const Room = () => {
                     </div>
                 </div>
             </div>
+
+            {state.showModal && (
+                <ShowRoom
+                    imageUrl={state.selectedRoomImage}
+                    onClose={() => handleShowModal(null)}
+                />
+            )}
+
+
 
         </>
     );

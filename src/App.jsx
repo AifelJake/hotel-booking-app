@@ -11,6 +11,7 @@ import ProductForm from './pages/ProductForm';
 import Login from './pages/Login';
 import { UserProvider } from "./UserContext"
 import Register from './pages/Register';
+import ShowRoom from './components/ShowRoom';
 
 function App() {
   const [count, setCount] = useState(0);
@@ -31,12 +32,13 @@ const unsetUser = () => {
 
     <BrowserRouter>
     <UserProvider value={{user, setUser, unsetUser}}>
-      <Navbar />
+      {/* <Navbar /> */}
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
         <Route path="/rooms" element={<Room />} />
+        <Route path="/show" element={<ShowRoom />} />
         <Route path='/activities' element={<Activities />} />
         <Route path='/dashboard' element={<Dashboard/>} />
         <Route path='/add' element={<ProductForm/>} />
