@@ -195,7 +195,7 @@ const Room = () => {
         }
     };
 
-
+    // converts date into more readable format
     const formatDateString = (dateString) => {
         const date = new Date(dateString);
         const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -405,8 +405,13 @@ const Room = () => {
 
                         {/* number of children and adults section */}
                         <div className='flex gap-2'>
-                            <p>Adult {state.numberOfAdults} -</p>
-                            <p>Children {state.numberOfChildren}</p>
+                            {
+                                numberOfAdults ? (
+                                    <>
+                                        <p>Adult {state.numberOfAdults} -</p>
+                                        <p>Children {state.numberOfChildren}</p></>
+                                ) : (null)
+                            }
                         </div>
                         {isSingleError && <p className="text-red-500 text-center">{error}</p>}
 
