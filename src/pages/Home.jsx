@@ -15,26 +15,26 @@ import liquor from "../assets/img/liquor.jpg"
 import spoon from "../assets/img/spoon.png"
 
 const Home = () => {
-    
+
     return (
         <>
 
-            <div className='mt-12'>
-                <div className=' h-[90vh] w-[100%] text-white' style={{
+            <div className='mt-12 '>
+                <div className=' h-[90vh] w-[100%] text-white ' style={{
                     backgroundImage: `url(${bgHotel})`,
                     backgroundSize: 'cover',
                     backgroundRepeat: 'no-repeat',
                     backgroundPosition: 'center'
                 }} alt="" >
 
-                    <div className='pl-[10%] pt-[8%]  text-[5em] welcome'>
-                        <p className='w-[4.7em] border-t-[2.5px] border-r-[2.5px] font-bold pt-3'><span className='text-[1.5em]'>W</span>elcome</p>
+                    <div className='md:pl-[10%] md:pt-[8%] pl-[30%] pt-[60%]  md:text-[5em] text-[2.5em] welcome'>
+                        <p className='md:w-[4.7em] w-[5.5em] border-t-[2.5px] border-r-[2.5px] font-bold pt-3'><span className='md:text-[1.5em] text-[1.7em]'>W</span>elcome</p>
                     </div>
-                    <div className='ml-[7%]  mt-[-9%] text-[5em] welcome'>
-                        <p className='w-[4.7em] pl-2 border-b-[2.5px] border-l-[2.5px] font-bold pt-8'><span className='text-[1.5em]'>A</span>wesome</p>
+                    <div className='md:ml-[7%] md:mt-[-9%] ml-[15%] mt-[-15%] md:text-[5em] text-[2.5em] welcome'>
+                        <p className='md:w-[4.7em] w-[5.5em] pl-2 border-b-[2.5px] border-l-[2.5px] font-bold pt-8'><span className='md:text-[1.5em] text-[1.7em]'>A</span>wesome</p>
                     </div>
 
-                    <div className='bg-white w-[120px] ml-[24%] flex justify-center items-center '>
+                    <div className='bg-white w-[120px] md:ml-[24%] ml-[40.5%] flex justify-center items-center '>
                         <div className='flex items-center'>
                             <p className=' w-[100%] items-center text-black h-[30px] text-l'>Book Now!</p>
                         </div>
@@ -55,28 +55,31 @@ const Home = () => {
                     </div>
                 </div>
 
-                <div className='flex justify-evenly pt-[20px] mx-5'>
+                <div className='md:flex md:justify-evenly pt-[20px] mx-5'>
                     <div>
-                        <img src={roomOne} className='h-[110%]' width="220" alt="" />
+                        <img src={roomOne} className='h-[110%] md:w-[220px] w-[100%]' alt="" />
                     </div>
-                    <div>
-                        <img src={roomTwo} className='h-[110%]' width="220" alt="" />
+                    <div className='hidden sm:block'> {/* Hide on small screens */}
+                        <img src={roomTwo} className='h-[110%] md:w-[220px]' alt="" />
                     </div>
-                    <div><img src={roomThree} className='h-[110%]' width="220" alt="" /></div>
-                    <div>
-                        <img src={roomFour} className='h-[110%]' width="220" alt="" />
+                    <div className='hidden sm:block'> {/* Hide on small screens */}
+                        <img src={roomThree} className='h-[110%] md:w-[220px]' alt="" />
                     </div>
-                    <div>
-                        <img src={roomFive} className='h-[110%]' width="220" alt="" />
+                    <div className='hidden sm:block'> {/* Hide on small screens */}
+                        <img src={roomFour} className='h-[110%] md:w-[220px]' alt="" />
+                    </div>
+                    <div className='hidden sm:block'> {/* Hide on small screens */}
+                        <img src={roomFive} className='h-[110%] md:w-[220px]' alt="" />
                     </div>
                 </div>
+
 
                 <div className='flex justify-center text-center pt-11  text-white'>
                     <p className='bg-[#A67B5B] w-[150px] h-[30px] rounded-xl flex items-center justify-center see-all- btn italic  '>SEE ALL ROOMS</p>
                 </div>
 
-                <div className='flex pt-[30px] px-[70px]'>
-                    <div className='flex items-center w-[90%] h-[80vh] justify-center py-10'>
+                <div className='md:flex md:pt-[30px] md:px-[70px] px-3'>
+                    <div className='flex items-center md:w-[90%] w-[100%] md:h-[80vh] h-[60vh] justify-center py-10'>
                         <div className='w-[100%] h-[100%] flex items-center border shadow-xl '>
                             <img src={hotelDining} className='p-[20px] h-[100%]' alt="" />
                         </div>
@@ -102,36 +105,42 @@ const Home = () => {
                 </div>
 
                 {/* RESTAURANT, PASTRY, LIQOUR section */}
-                <div className='flex justify-center items-center pt-10'>
-                    <div className='h-[70vh] w-[30%] flex text-white items-end justify-end' style={{
-                        backgroundImage: `url(${restaurant})`,
-                        backgroundSize: 'cover',
-                        backgroundRepeat: 'no-repeat',
-                        backgroundPosition: 'center'
-                    }}>
-                        {/* <img src={spoon} alt="" /> */}
-                        <p className='restau-txt mr-20 mb-5 text-2xl italic'>RESTAURANT </p>
+                <div className='md:flex md:justify-center md:items-center pt-10'>
+                    <div className='flex justify-center m-flex-col md:w-[30%] w-[100%]'>
+                        <div className='h-[70vh] md:w-[100%] w-[70%] flex text-white items-end justify-end' style={{
+                            backgroundImage: `url(${restaurant})`,
+                            backgroundSize: 'cover',
+                            backgroundRepeat: 'no-repeat',
+                            backgroundPosition: 'center'
+                        }}>
+                            {/* <img src={spoon} alt="" /> */}
+                            <p className='restau-txt mr-20 mb-5 text-2xl italic'>RESTAURANT </p>
 
+                        </div>
                     </div>
-                    <div className='h-[70vh] w-[30%]     flex items-end justify-end' style={{
-                        backgroundImage: `url(${pastry})`,
-                        backgroundSize: 'cover',
-                        backgroundRepeat: 'no-repeat',
-                        backgroundPosition: 'center'
-                    }}>
-                        <p className='restau-txt mr-20 mb-5 text-2xl italic'>LOBBY CAFE</p>
+                    <div className='flex justify-center m-flex-col md:w-[30%] w-[100%]'>
+                        <div className='h-[70vh] md:w-[100%] w-[70%]    flex items-end justify-end' style={{
+                            backgroundImage: `url(${pastry})`,
+                            backgroundSize: 'cover',
+                            backgroundRepeat: 'no-repeat',
+                            backgroundPosition: 'center'
+                        }}>
+                            <p className='restau-txt mr-20 mb-5 text-2xl italic'>LOBBY CAFE</p>
+                        </div>
                     </div>
-                    <div className='h-[70vh] w-[30%] text-white flex items-end justify-end' style={{
-                        backgroundImage: `url(${liquor})`,
-                        backgroundSize: 'cover',
-                        backgroundRepeat: 'no-repeat',
-                        backgroundPosition: 'center'
-                    }}>
-                        <p className='restau-txt mr-10 mb-5 text-2xl italic'>SPORTS BAR</p>
+                    <div className='flex justify-center m-flex-col md:w-[30%] w-[100%]'>
+                        <div className='h-[70vh] md:w-[100%] w-[70%] text-white flex items-end justify-end' style={{
+                            backgroundImage: `url(${liquor})`,
+                            backgroundSize: 'cover',
+                            backgroundRepeat: 'no-repeat',
+                            backgroundPosition: 'center'
+                        }}>
+                            <p className='restau-txt mr-10 mb-5 text-2xl italic'>SPORTS BAR</p>
+                        </div>
                     </div>
                 </div>
 
-             
+
 
             </div>
 

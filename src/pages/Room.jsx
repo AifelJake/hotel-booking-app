@@ -8,13 +8,11 @@ import CircularProgress from '@mui/material/CircularProgress';
 import bed from "../assets/img/bed.png";
 import person from "../assets/img/person.png";
 import bathroom from "../assets/img/bathroom.png";
-import down from "../assets/img/down.png";
-import up from "../assets/img/up.png";
-import bin from "../assets/img/bin.png";
 import bgBooking from "../assets/img/bgBooking.jpg"
 import frontBg from "../assets/img/frontBg.jpg"
 
 import ShowRoom from '../components/ShowRoom';
+import SelectedRooms from '../components/SelectedRooms';
 
 const initialState = {
     showMore: false,
@@ -151,53 +149,8 @@ const Room = () => {
         dispatch({ type: 'REMOVE_SELECTED_ROOM', payload: id });
     };
 
-    const bookRoom = async () => {
-        try {
-            const { checkInDate, checkOutDate, selectedRooms, numberOfAdults, numberOfChildren } = state;
-            if (!checkInDate || !checkOutDate || selectedRooms.length === 0) {
-                dispatch({ type: 'SET_ERROR', payload: "Please select check-in and check-out dates and at least one room." });
-                return;
-            }
+   
 
-            const token = localStorage.getItem("token"); // Retrieve the token from localStorage
-
-            const payload = {
-                products: selectedRooms.map(room => ({
-                    productId: room.id,
-                    productName: room.name,
-                    productImage: room.image,
-                    price: room.price,
-                    numberOfAdults: numberOfAdults,
-                    numberOfChildren: numberOfChildren,
-                    checkIn: checkInDate,
-                    checkOut: checkOutDate
-                }))
-            };
-
-            const res = await axios.post('http://localhost:4002/order/orders', payload, {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
-            console.log(res.data);
-
-        } catch (error) {
-            console.log(error);
-            dispatch({ type: 'SET_ERROR', payload: error.message });
-
-        }
-    };
-
-
-    const calculateTotalPrice = () => {
-        const prices = state.selectedRooms.map(room => room.price);
-
-        const totalPrice = prices.reduce((acc, currentValue) => {
-            const num = parseFloat(currentValue.replace(',', ''))
-            return acc + num
-        }, 0);
-        return totalPrice;
-    };
 
     const calculateStayDuration = () => {
 
@@ -211,6 +164,8 @@ const Room = () => {
         console.log(duration)
         return duration;
     };
+
+    
 
     const handleRoomSelect = (id, name, image, price, inclusions, bed, bathroom) => {
         const { checkInDate, checkOutDate, numberOfAdults } = state;
@@ -237,30 +192,14 @@ const Room = () => {
             dispatch({ type: 'SET_ERROR', payload: errors });
         }
     };
+    
 
-    // converts date into more readable format
-    const formatDateString = (dateString) => {
-        const date = new Date(dateString);
-        const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-        const dayOfWeek = days[date.getDay()];
-        const dayOfMonth = date.getDate();
-        const month = months[date.getMonth()];
-        const year = date.getFullYear().toString().slice(-2);
-        return `${dayOfWeek}, ${dayOfMonth} ${month} ${year}`;
-    };
+    
 
-    const formatCheckInOutDates = () => {
-        const { checkInDate, checkOutDate } = state;
-        const formattedCheckInDate = formatDateString(checkInDate);
-        const formattedCheckOutDate = formatDateString(checkOutDate);
-        return `${formattedCheckInDate} – ${formattedCheckOutDate}`;
-    };
-
-    const { showMore, error, checkInDate, checkOutDate, numberOfAdults, numberOfChildren, showModal } = state;
+    const { showMore, error, checkInDate, checkOutDate, numberOfAdults, numberOfChildren, showModal, selectedRooms } = state;
     const isSingleError = error && !Array.isArray(error);
 
-
+    console.log(console.log(selectedRooms))
     return (
         <>
 
@@ -351,16 +290,16 @@ const Room = () => {
             {/* end */}
 
 
-            <div className='px-[12%] flex gap-3 mt-20'>
+            <div className='md:px-[12%] px-3 flex gap-3 mt-20'>
 
                 {/* ROOM DETAILS */}
                 <div>
                     {state.rooms.map((room, id) => (
-                        <div className='w-[100%] border p-2 shadow-md flex mb-5' key={id}>
-                            <div className='w-30% '>
+                        <div className='w-[100%] border md:p-2 shadow-md md:flex mb-5' key={id}>
+                            <div className='md:w-30% '>
                                 <img
                                     src={'http://localhost:4002/images/' + room.image}
-                                    className='max-h-[270px] w-[220px]'
+                                    className='max-h-[270px] md:w-[220px] w-[100%]'
                                     alt=""
                                     onClick={() => handleShowModal('http://localhost:4002/images/' + room.image)}
                                 />
@@ -368,14 +307,14 @@ const Room = () => {
 
                             </div>
 
-                            <div className='ml-5 w-[70%] py-3 px-2 space-y-2'>
-                                <p className='text-2xl font-bold'>{room.name}</p>
+                            <div className='md:ml-5 md:w-[70%] w-[100%] py-3 px-4 space-y-2 '>
+                                <p className='md:text-2xl text-xl font-bold text-center'>{room.name}</p>
 
                                 {/* LOGOS */}
                                 <div className='flex items-center gap-3'>
                                     <div className='flex items-center gap-1'>
                                         <img src={person} className='h-[18px]' alt="person logo" />
-                                        <p>{room.person} sleeps</p>
+                                        <p>{room.person} sleep</p>
                                     </div>
                                     <div className='flex items-center gap-1'>
                                         <img src={bed} className='h-[20px]' alt="bed logo" />
@@ -417,132 +356,10 @@ const Room = () => {
                     ))}
                 </div>
 
+                <SelectedRooms checkInDate={checkInDate} checkOutDate={checkOutDate} numberOfAdults={numberOfAdults} numberOfChildren={numberOfChildren} selectedRooms={selectedRooms} calculateStayDuration={calculateStayDuration}/>
+
                 {/* BOOKED/RESERVATION SECTION */}
-                <div className='min-w-[30%]'>
-                    <div className='border-2 p-4 min-w-[100%] max-w-[100%] space-y-2'>
-                        <div className='space-x-5 flex min-w-[100%] max-w-[100%]'>
-                            <div className='flex w-[100%]'>
-                                <div className='w-[83%]'>
-                                    {
-                                        checkInDate && checkOutDate ? (
-                                            <>
-                                                <p>{formatCheckInOutDates()}</p>
-                                            </>
-                                        ) : (
-                                            <>
-                                                <p className='text-red-500'>Please choose check-in and check-out dates above</p>
-                                            </>
-                                        )
-                                    }
-                                </div>
-
-
-                                {
-                                    checkInDate && checkOutDate && calculateStayDuration() >= 1 ? (
-                                        <>
-                                            <div className='flex justify-end w-[17%]'>
-                                                <p>{calculateStayDuration()} night</p>
-                                            </div>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <p></p>
-                                        </>
-                                    )
-                                }
-
-                            </div>
-                        </div>
-
-
-                        {/* number of children and adults section */}
-                        <div className='flex gap-2'>
-                            {
-                                numberOfAdults ? (
-                                    <>
-                                        <p>Adult {state.numberOfAdults} -</p>
-                                        <p>Children {state.numberOfChildren}</p></>
-                                ) : (null)
-                            }
-                        </div>
-                        {isSingleError && <p className="text-red-500 text-center">{error}</p>}
-
-                        <hr />
-                        <p className='font-bold text-center'>SELECT A ROOM TO BOOK</p>
-
-
-
-                        <div className='flex justify-center '>
-                            {/* SECTION AFTER SELECTING A ROOM */}
-                            {state.selectedRooms.length > 0 && (
-                                <div className='w-[100%] font-lato '>
-                                    <p className='font-bold font-sans text-xl'>PHP {calculateTotalPrice()} total</p>
-                                    <div className='flex text-gray-500 gap-2'>
-
-                                    </div>
-                                    {state.selectedRooms.map((room, index) => (
-                                        <div key={index} className='flex items-center '>
-                                            <hr />
-                                            <div className='w-[100%] space-y-2'>
-                                                <div className='flex items-center'>
-                                                    <p className='mr-auto font-bold text-1xl'>{room.name}</p>
-                                                    <img src={bin} className='h-[20px]' onClick={() => handleRoomDeselect(room.id)} />
-                                                </div>
-
-                                                <p className='text-md font-lato'>Selected Room/s Details:</p>
-                                                <div className=''>
-
-                                                    <div className='flex '>
-                                                        <div className='mr-auto text-gray-500'>
-                                                            <p>-{room.bed}</p>
-                                                            <p>-{room.bathroom} bathroom</p>
-                                                        </div>
-                                                        <div className='flex items-center justify-center font-bold text-md font-roboto'>{room.price}</div>
-                                                    </div>
-
-                                                </div>
-                                                {/* Inclusion SECTION */}
-                                                <div className='flex items-center '>
-                                                    <p className='text-md pr-5 font-lato'>Room Inclusions</p>
-                                                    <img src={room.showInclusion ? up : down} className='min-h-[10px]' onClick={() => handleRoomInclusionToggle(room.id)} alt="" />
-                                                </div>
-                                                {room.showInclusion && (
-                                                    <div onClick={() => handleRoomInclusionToggle(room.id)} className='pr-[150px]'>
-                                                        <p>{room.inclusions}</p>
-                                                    </div>
-                                                )}
-                                                {/* End inclusion section */}
-                                                <hr />
-
-
-                                            </div>
-                                        </div>
-
-                                    ))}
-
-                                    <div className='flex font-bold'>
-                                        <p className='mr-auto'>Total Price: </p>
-                                        <p>PHP {calculateTotalPrice()}</p>
-
-                                    </div>
-                                </div>
-                            )}
-
-                        </div>
-
-
-
-
-                        <div>
-                            <button className='bg-[#A67B5B] text-white font-bold w-full rounded-md py-2' onClick={bookRoom}>
-                                BOOK NOW
-                            </button>
-                            {!isSingleError && <p className="text-red-500">{error}</p>}
-
-                        </div>
-
-                    </div>
-                </div>
+                
             </div>
 
             {state.showModal && (

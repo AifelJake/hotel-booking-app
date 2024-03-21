@@ -21,16 +21,16 @@ const Navbar = () => {
   ];
 
   return (
-    <div className=' flex justify-between items-center h-24 mx-auto px-4 '>
+    <div className=' flex justify-between items-center py-4 bg-white fixed top-0 left-0 md-w-full w-[100vw] z-50 mx-auto px-4 border-b-3 '>
       {/* Logo */}
-      <h1 className='w-full text-3xl ml-10 font-bold text-[#00df9a]'>AWH</h1>
+      <h1 className='w-full md-text-3xl text-2xl ml-10 font-bold text-[#00df9a]'>AWH</h1>
 
       {/* Desktop Navigation */}
       <ul className='hidden md:flex'>
         {navItems.map(item => (
           <li
             key={item.id}
-            className='p-4 hover:bg-[#00df9a] rounded-xl m-2 cursor-pointer duration-300 hover:text-black'
+            className='p-4 hover:bg-[#00df9a] rounded-xl cursor-pointer duration-300 hover:text-black'
           >
             <Link to={item.path}>{item.text}</Link> 
           </li>
