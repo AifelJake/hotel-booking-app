@@ -1,5 +1,8 @@
-import React, { useEffect, useReducer } from 'react';
+import { useEffect, useReducer, useState } from 'react';
 import axios from 'axios';
+import * as React from 'react';
+import Backdrop from '@mui/material/Backdrop';
+import CircularProgress from '@mui/material/CircularProgress';
 
 // images import
 import bed from "../assets/img/bed.png";
@@ -28,7 +31,16 @@ const initialState = {
 const reducer = (state, action) => {
     switch (action.type) {
         case 'TOGGLE_DESC':
-            return { ...state, showMore: !state.showMore };
+            const roomIdToShowMore = action.payload;
+            const updatedRooms = state.rooms.map(room => {
+                if (room._id === roomIdToShowMore) {
+                    return { ...room, showMore: !room.showMore };
+                }
+                return room;
+            });
+            return { ...state, rooms: updatedRooms };
+
+
         case 'TOGGLE_INCLUSION':
             const roomIdToToggle = action.payload;
             const toggledSelectedRooms = state.selectedRooms.map(room => {
@@ -75,19 +87,24 @@ const reducer = (state, action) => {
 
 const Room = () => {
     const [state, dispatch] = useReducer(reducer, initialState);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const res = await axios.get("http://localhost:4002/product/all");
+
+                const res = await axios.get("http://localhost:4002/product/active");
                 dispatch({ type: 'SHOW_ROOMS', payload: res.data });
+                setLoading(false)
             } catch (error) {
                 dispatch({ type: 'SET_ERROR', payload: error.message });
+                setLoading(false)
             }
         };
 
         fetchData();
     }, []);
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -95,9 +112,11 @@ const Room = () => {
                 const res = await axios.get("http://localhost:4002/product/getImages");
                 dispatch({ type: 'FETCH_IMAGE', payload: res.data });
 
+
             } catch (error) {
                 console.log(error);
                 dispatch({ type: 'SET_ERROR', payload: error.message });
+
             }
         };
 
@@ -122,6 +141,11 @@ const Room = () => {
     const handleRoomInclusionToggle = (roomId) => {
         dispatch({ type: 'TOGGLE_INCLUSION', payload: roomId });
     };
+
+    const handleToggleDesc = (roomId) => {
+
+        dispatch({ type: 'TOGGLE_DESC', payload: roomId })
+    }
 
     const handleRoomDeselect = (id) => {
         dispatch({ type: 'REMOVE_SELECTED_ROOM', payload: id });
@@ -156,9 +180,11 @@ const Room = () => {
                 }
             });
             console.log(res.data);
+
         } catch (error) {
             console.log(error);
             dispatch({ type: 'SET_ERROR', payload: error.message });
+
         }
     };
 
@@ -237,6 +263,8 @@ const Room = () => {
 
     return (
         <>
+
+
 
             {/* choosing dates and numbers section */}
             <div className='flex '>
@@ -362,8 +390,8 @@ const Room = () => {
                                 {/* Show more */}
                                 <p>{room.description}</p>
                                 <div className='flex'>
-                                    {!showMore && (
-                                        <button className='italic underline' onClick={() => dispatch({ type: 'TOGGLE_DESC' })}>
+                                    {!room.showMore && (
+                                        <button className='italic underline' onClick={() => handleToggleDesc(room._id)}>
                                             See More
                                         </button>
                                     )}
@@ -374,12 +402,12 @@ const Room = () => {
                                     </div>
                                 </div>
 
-                                {showMore && (
+                                {room.showMore && (
                                     <>
-                                        <div onClick={() => dispatch({ type: 'TOGGLE_DESC' })} className='mr-[320px]'>
+                                        <div onClick={() => handleToggleDesc(room._id)} className='mr-[320px]'>
                                             <p>{room.moreDescription}</p>
                                         </div>
-                                        <button className='italic underline' onClick={() => dispatch({ type: 'TOGGLE_DESC' })}>
+                                        <button className='italic underline' onClick={() => handleToggleDesc(room._id)}>
                                             See Less
                                         </button>
                                     </>
@@ -524,7 +552,14 @@ const Room = () => {
                 />
             )}
 
-
+            {loading && (
+                <Backdrop
+                    sx={{ color: '#fff', zIndex: 9999 }} // Adjust the zIndex value as needed
+                    open={loading}
+                >
+                    <CircularProgress color="inherit" />
+                </Backdrop>
+            )}
 
         </>
     );

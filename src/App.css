@@ -24,3 +24,11 @@
     font-weight: 400;
     font-style: normal;
 }
+
+label {
+    font-family: 'Lato', 'sans-serif';
+    font-weight: bold;
+    font-style: italic  ;
+    padding-bottom: 5px;
+    padding-top: 2px;
+}

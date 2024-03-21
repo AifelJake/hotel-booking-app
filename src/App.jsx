@@ -7,11 +7,12 @@ import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Activities from './pages/Activities';
 import Dashboard from './pages/Dashboard';
-import ProductForm from './pages/ProductForm';
+import ProductForm from './components/ProductForm';
 import Login from './pages/Login';
 import { UserProvider } from "./UserContext"
 import Register from './pages/Register';
 import ShowRoom from './components/ShowRoom';
+import UpdateProduct from './components/UpdateProduct';
 
 function App() {
   const [count, setCount] = useState(0);
@@ -32,8 +33,9 @@ const unsetUser = () => {
 
     <BrowserRouter>
     <UserProvider value={{user, setUser, unsetUser}}>
-      {/* <Navbar /> */}
+      <Navbar />
       <Routes>
+      <Route path="/update" element={<UpdateProduct />} />
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />

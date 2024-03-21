@@ -5,7 +5,7 @@ const Modal = ({ imageUrl, onClose, onPrev, onNext }) => {
   return (
     <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-50">
       {/* Background overlay */}
-      <div className="fixed top-0 left-0 w-full h-full bg-black opacity-50"></div>
+      <div className="fixed top-0 left-0 w-full h-full bg-black opacity-90"></div>
       
       {/* Modal content */}
       <div className=" rounded-lg  max-w-sm relative z-10 flex justify-center items-center">

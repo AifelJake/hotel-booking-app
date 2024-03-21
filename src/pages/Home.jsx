@@ -15,6 +15,7 @@ import liquor from "../assets/img/liquor.jpg"
 import spoon from "../assets/img/spoon.png"
 
 const Home = () => {
+    
     return (
         <>
 
