@@ -22,6 +22,7 @@ const initialState = {
     selectedRooms: [],
     numberOfChildren: 0,
     numberOfAdults: 0,
+    showMobileSelectRooms: false,
     showModal: false,
     error: null // Changed to null initially
 };
@@ -52,7 +53,8 @@ const reducer = (state, action) => {
             return { ...state, showModal: !state.showModal, selectedRoomImage: action.payload };
         case 'TOGGLE_GLOBAL_MODAL':
             return { ...state, showModal: !state.showModal };
-
+        case 'TOGGLE_SHOW_MOBILE_MODAL':
+            return { ...state, showMobileSelectRooms: !state.showMobileSelectRooms };
         case 'FETCH_IMAGE':
             return { ...state, image: action.payload };
         case 'SHOW_ROOMS':
@@ -147,10 +149,14 @@ const Room = () => {
 
     const handleRoomDeselect = (id) => {
         dispatch({ type: 'REMOVE_SELECTED_ROOM', payload: id });
+        console.log('clicked')
     };
 
 
-
+    const toggleShowMobileSelectRooms = () => {
+        dispatch({ type: 'TOGGLE_SHOW_MOBILE_MODAL' })
+        console.log('clicked')
+    }
 
     const calculateStayDuration = () => {
 
@@ -161,7 +167,6 @@ const Room = () => {
         const startDate = new Date(checkInDate);
         const endDate = new Date(checkOutDate);
         const duration = (endDate - startDate) / oneDay;
-        console.log(duration)
         return duration;
     };
 
@@ -193,7 +198,7 @@ const Room = () => {
         }
     };
 
-    const { showMore, error, checkInDate, checkOutDate, numberOfAdults, numberOfChildren, showModal, selectedRooms } = state;
+    const { showMore, error, checkInDate, checkOutDate, numberOfAdults, numberOfChildren, showModal, selectedRooms, showMobileSelectRooms } = state;
 
     // calculate total price
     const calculateTotalPrice = () => {
@@ -215,7 +220,6 @@ const Room = () => {
 
     const isSingleError = error && !Array.isArray(error);
 
-    console.log(console.log(selectedRooms))
     return (
         <>
 
@@ -306,7 +310,7 @@ const Room = () => {
             {/* end */}
 
 
-            <div className='md:px-[12%] px-3 flex gap-3 mt-20'>
+            <div className='md:px-[12%] px-3 flex gap-3 mb-20 mt-20'>
 
                 {/* ROOM DETAILS */}
                 <div>
@@ -384,7 +388,8 @@ const Room = () => {
             {/* SMALL SECTION FOR MOBILE */}
             <div className='md:hidden fixed bottom-0 bg-white w-[100vw] px-4 flex items-center  border-2 h-[8%]'>
 
-                <div className='w-[60%]'>
+                <div className='w-[60%]'
+                    onClick={toggleShowMobileSelectRooms}>
 
                     <p className='text-xl font-bold'>PHP {calculateTotalPrice()}</p>
                     <div className='flex font-lato text-gray-500'>
@@ -400,7 +405,7 @@ const Room = () => {
                 <div className='flex justify-center items-center w-[40%]'>
                     <div className='text-white flex justify-center items-center py-2 rounded bg-[#A67B5B] w-[100%]'>
                         <p>
-                        BOOK NOW
+                            BOOK NOW
                         </p>
                     </div>
                 </div>
@@ -412,6 +417,12 @@ const Room = () => {
                     onClose={() => handleShowModal(null)}
                 />
             )}
+
+            {
+                showMobileSelectRooms && (
+                    <SelectedRooms checkInDate={checkInDate} checkOutDate={checkOutDate} numberOfAdults={numberOfAdults} numberOfChildren={numberOfChildren} selectedRooms={selectedRooms} calculateStayDuration={calculateStayDuration} calculateTotalPrice={calculateTotalPrice} handleRoomDeselect={handleRoomDeselect} toggleShowMobileSelectRooms={toggleShowMobileSelectRooms}/>
+                )
+            }
 
             {loading && (
                 <Backdrop
