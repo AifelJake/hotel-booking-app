@@ -149,7 +149,7 @@ const Room = () => {
         dispatch({ type: 'REMOVE_SELECTED_ROOM', payload: id });
     };
 
-   
+
 
 
     const calculateStayDuration = () => {
@@ -165,7 +165,7 @@ const Room = () => {
         return duration;
     };
 
-    
+
 
     const handleRoomSelect = (id, name, image, price, inclusions, bed, bathroom) => {
         const { checkInDate, checkOutDate, numberOfAdults } = state;
@@ -192,11 +192,27 @@ const Room = () => {
             dispatch({ type: 'SET_ERROR', payload: errors });
         }
     };
-    
-
-    
 
     const { showMore, error, checkInDate, checkOutDate, numberOfAdults, numberOfChildren, showModal, selectedRooms } = state;
+
+    // calculate total price
+    const calculateTotalPrice = () => {
+        const prices = selectedRooms.map(room => room.price);
+
+        const totalPrice = prices.reduce((acc, currentValue) => {
+            const num = parseFloat(currentValue.replace(',', ''))
+            return acc + num
+        }, 0);
+        return totalPrice;
+    };
+
+    const totalGuests = numberOfAdults + numberOfChildren;
+    const totalRoomCount = selectedRooms.reduce((total, room) => {
+        return total + room.quantity;
+    }, 0);
+
+
+
     const isSingleError = error && !Array.isArray(error);
 
     console.log(console.log(selectedRooms))
@@ -354,12 +370,40 @@ const Room = () => {
                             </div>
                         </div>
                     ))}
+
                 </div>
 
-                <SelectedRooms checkInDate={checkInDate} checkOutDate={checkOutDate} numberOfAdults={numberOfAdults} numberOfChildren={numberOfChildren} selectedRooms={selectedRooms} calculateStayDuration={calculateStayDuration}/>
+                <div className='hidden md:flex min-w-[30%]'>
+                    <SelectedRooms checkInDate={checkInDate} checkOutDate={checkOutDate} numberOfAdults={numberOfAdults} numberOfChildren={numberOfChildren} selectedRooms={selectedRooms} calculateStayDuration={calculateStayDuration} calculateTotalPrice={calculateTotalPrice} />
 
+                </div>
                 {/* BOOKED/RESERVATION SECTION */}
-                
+
+            </div>
+
+            {/* SMALL SECTION FOR MOBILE */}
+            <div className='md:hidden fixed bottom-0 bg-white w-[100vw] px-4 flex items-center  border-2 h-[8%]'>
+
+                <div className='w-[60%]'>
+
+                    <p className='text-xl font-bold'>PHP {calculateTotalPrice()}</p>
+                    <div className='flex font-lato text-gray-500'>
+                        <p>{totalRoomCount} Room,</p>
+                        <p>Guest: {totalGuests} </p>
+
+                    </div>
+
+
+                </div>
+
+                {/* book now button for mobile */}
+                <div className='flex justify-center items-center w-[40%]'>
+                    <div className='text-white flex justify-center items-center py-2 rounded bg-[#A67B5B] w-[100%]'>
+                        <p>
+                        BOOK NOW
+                        </p>
+                    </div>
+                </div>
             </div>
 
             {state.showModal && (

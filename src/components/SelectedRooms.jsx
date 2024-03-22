@@ -13,7 +13,7 @@ const initialState = {
 
 
 
-function SelectedRooms({checkInDate, checkOutDate, numberOfAdults, numberOfChildren, selectedRooms, calculateStayDuration}) {
+function SelectedRooms({checkInDate, checkOutDate, numberOfAdults, numberOfChildren, selectedRooms, calculateStayDuration, calculateTotalPrice}) {
 
 
     const reducer = (state, action) => {
@@ -56,16 +56,6 @@ function SelectedRooms({checkInDate, checkOutDate, numberOfAdults, numberOfChild
     };
 
     
-
-    const calculateTotalPrice = () => {
-        const prices = selectedRooms.map(room => room.price);
-
-        const totalPrice = prices.reduce((acc, currentValue) => {
-            const num = parseFloat(currentValue.replace(',', ''))
-            return acc + num
-        }, 0);
-        return totalPrice;
-    };
 
     const handleRoomInclusionToggle = (roomId) => {
         dispatch({ type: 'TOGGLE_INCLUSION', payload: roomId });
@@ -111,7 +101,7 @@ function SelectedRooms({checkInDate, checkOutDate, numberOfAdults, numberOfChild
     const {error} = state
     const isSingleError = error && !Array.isArray(error);
   return (
-    <div className='min-w-[30%]'>
+    <div className='md:min-w-[100%]'>
                     <div className='border-2 p-4 min-w-[100%] max-w-[100%] space-y-2'>
                         <div className='space-x-5 flex min-w-[100%] max-w-[100%]'>
                             <div className='flex w-[100%]'>
