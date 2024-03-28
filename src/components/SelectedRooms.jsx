@@ -8,12 +8,11 @@ import bin from "../assets/img/bin.png";
 const initialState = {
     showMore: false,
 
-    error: null // Changed to null initially
 };
 
 
 
-function SelectedRooms({ checkInDate, checkOutDate, numberOfAdults, numberOfChildren, selectedRooms, calculateStayDuration, calculateTotalPrice, handleRoomDeselect, toggleShowMobileSelectRooms }) {
+function SelectedRooms({ checkInDate, checkOutDate, numberOfAdults, numberOfChildren, selectedRooms, calculateStayDuration, calculateTotalPrice, handleRoomDeselect, toggleShowMobileSelectRooms,error }) {
 
 
     const reducer = (state, action) => {
@@ -63,8 +62,7 @@ function SelectedRooms({ checkInDate, checkOutDate, numberOfAdults, numberOfChil
         try {
 
             if (!checkInDate || !checkOutDate || selectedRooms.length === 0) {
-                dispatch({ type: 'SET_ERROR', payload: "Please select check-in and check-out dates and at least one room." });
-                return;
+                return error
             }
 
             const token = localStorage.getItem("token"); // Retrieve the token from localStorage
@@ -96,14 +94,15 @@ function SelectedRooms({ checkInDate, checkOutDate, numberOfAdults, numberOfChil
         }
     };
 
-    const { error } = state
     const isSingleError = error && !Array.isArray(error);
     return (
-        <div className='md:min-w-[100%] fixed inset-0 z-50 overflow-y-auto bg-white'>
+        
             <div className='border-2 p-4 min-w-[100%] max-w-[100%] space-y-2'>
                 <div className='flex'>
-                    <p className='mr-auto text-[1em]'>Booking summary</p>
-                    <p onClick={() => toggleShowMobileSelectRooms()}>X</p>
+                    <p className='mr-auto text-[1em] '>Booking summary</p>
+                    <p 
+                    className='md:hidden' 
+                    onClick={() => toggleShowMobileSelectRooms()}>X</p>
                 </div>
 
                 <hr />
@@ -226,12 +225,11 @@ function SelectedRooms({ checkInDate, checkOutDate, numberOfAdults, numberOfChil
                     <button className='bg-[#A67B5B] text-white font-bold w-full rounded-md py-2' onClick={bookRoom}>
                         BOOK NOW
                     </button>
-                    {!isSingleError && <p className="text-red-500">{error}</p>}
 
                 </div>
 
             </div>
-        </div>
+        
     )
 }
 

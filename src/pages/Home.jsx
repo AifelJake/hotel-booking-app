@@ -1,5 +1,5 @@
 import React from 'react'
-
+import { Carousel } from "@material-tailwind/react";
 
 // PICTURES IMPORTED
 import bgHotel from "../assets/img/oo.jpg"
@@ -15,6 +15,16 @@ import liquor from "../assets/img/liquor.jpg"
 import spoon from "../assets/img/spoon.png"
 
 const Home = () => {
+
+    const images = [
+        { name: roomOne },
+        { name: roomTwo },
+        { name: roomThree },
+        { name: roomFour },
+        { name: roomFive },
+    ]
+
+
 
     return (
         <>
@@ -41,8 +51,8 @@ const Home = () => {
                     </div>
                 </div>
 
-                <div className='pt-7'>
-                    <div className='text-center'>
+                <div className='pt-7  '>
+                    <div className='text-center sticky top-0'>
                         <p className='text-[1.4em] font-bold'>MODERN STYLISH ROOMS</p>
                     </div>
                     <div className='flex justify-center py-2'>
@@ -55,38 +65,78 @@ const Home = () => {
                     </div>
                 </div>
 
-                <div className='md:flex md:justify-evenly pt-[20px] mx-5'>
+
+                {/* images  */}
+                <div className='md:flex md:justify-center pt-10 hidden sm:flex'>
                     <div>
-                        <img src={roomOne} className='h-[110%] md:w-[220px] w-[100%]' alt="" />
+                        <img className='h-[90%] md:w-[270px] pt-[50%]' src={roomOne} alt="" />
+                        <p className='text-center font-semibold font-scheherazade'>White Elegant Room</p>
                     </div>
-                    <div className='hidden sm:block'> {/* Hide on small screens */}
-                        <img src={roomTwo} className='h-[110%] md:w-[220px]' alt="" />
+                    <div>
+                        <img className='h-[90%] md:w-[270px] pb-[50%]' src={roomTwo} alt="" />
+                        <p className='text-center mt-[-50%] font-semibold font-scheherazade'>Gold Stylish Room</p>
                     </div>
-                    <div className='hidden sm:block'> {/* Hide on small screens */}
-                        <img src={roomThree} className='h-[110%] md:w-[220px]' alt="" />
+                    <div>
+                        <img className='h-[90%] md:w-[270px] pt-[50%]' src={roomThree} alt="" />
+                        <p className='text-center font-semibold font-scheherazade'>Sky High Room</p>
                     </div>
-                    <div className='hidden sm:block'> {/* Hide on small screens */}
-                        <img src={roomFour} className='h-[110%] md:w-[220px]' alt="" />
+                    <div>
+                        <img className='h-[90%] md:w-[270px] pb-[50%]' src={roomFour} alt="" />
+                        <p className='text-center mt-[-50%] font-semibold font-scheherazade'>Cozy Room</p>
                     </div>
-                    <div className='hidden sm:block'> {/* Hide on small screens */}
-                        <img src={roomFive} className='h-[110%] md:w-[220px]' alt="" />
+                    <div>
+                        <img className='h-[90%] md:w-[270px] pt-[50%]' src={roomFive} alt="" />
+                        <p className='text-center font-semibold font-scheherazade'>White Elegant Room</p>
                     </div>
                 </div>
 
 
-                <div className='flex justify-center text-center pt-11  text-white'>
+
+                {/* IMAGES SECTION
+                <div className='md:flex hidden md:justify-evenly pt-[20px] mx-5'>
+                    {
+                        images.map((image, index) => (
+                            <div
+                                key={index}>
+                                <img src={image.name} className='h-[110%] md:w-[220px] w-[100%]' alt="" />
+                            </div>
+                        ))
+                    }
+                </div> */}
+
+                <div className='pt-[20px] mx-5 md:hidden'>
+                    <div>
+                        <Carousel>
+                            {images.map((image, index) => (
+                                <img
+                                    key={index + 1}
+                                    src={image.name}
+                                    alt={`Room ${index + 1}`}
+                                    className="max-h-[300px] w-[100%] object-cover"
+                                />
+                            ))}
+                        </Carousel>
+                    </div>
+                </div>
+
+
+
+
+
+
+                <div className='flex justify-center text-center pt-4  text-white'>
                     <p className='bg-[#A67B5B] w-[150px] h-[30px] rounded-xl flex items-center justify-center see-all- btn italic  '>SEE ALL ROOMS</p>
                 </div>
 
                 <div className='md:flex md:pt-[30px] md:px-[70px] px-3'>
-                    <div className='flex items-center md:w-[90%] w-[100%] md:h-[80vh] h-[60vh] justify-center py-10'>
+                    <div className='flex items-center md:w-[90%] w-[100%] md:h-[80vh] h-[40vh] justify-center py-10'>
                         <div className='w-[100%] h-[100%] flex items-center border shadow-xl '>
                             <img src={hotelDining} className='p-[20px] h-[100%]' alt="" />
                         </div>
                     </div>
 
                     <div className='flex justify-center items-center'>
-                        <div className='text-center  px-[60px]'>
+                        <div className='text-center  md:px-[60px] px-[20px]'>
                             <h2 className='text-2xl font-bold'>HOTEL DINING</h2>
                             <div className='flex justify-center py-2'>
                                 <div className='w-[70px] border-2 border-gold-200 border-t-[#FFD700] h-1'>
@@ -104,41 +154,53 @@ const Home = () => {
                     </div>
                 </div>
 
-                {/* RESTAURANT, PASTRY, LIQOUR section */}
+                {/* RESTAURANT, PASTRY, LIQUOR section */}
                 <div className='md:flex md:justify-center md:items-center pt-10'>
                     <div className='flex justify-center m-flex-col md:w-[30%] w-[100%]'>
-                        <div className='h-[70vh] md:w-[100%] w-[70%] flex text-white items-end justify-end' style={{
-                            backgroundImage: `url(${restaurant})`,
-                            backgroundSize: 'cover',
-                            backgroundRepeat: 'no-repeat',
-                            backgroundPosition: 'center'
-                        }}>
-                            {/* <img src={spoon} alt="" /> */}
-                            <p className='restau-txt mr-20 mb-5 text-2xl italic'>RESTAURANT </p>
-
+                        <div className='md:h-[70vh] h-[40vh]  md:w-[100%] w-[70%] flex text-white items-end justify-end restaurant-bg'
+                            style={{
+                                backgroundImage: `url(${restaurant})`,
+                                backgroundSize: 'cover',
+                                backgroundRepeat: 'no-repeat',
+                                backgroundPosition: 'center'
+                            }}>
+                            <p className='restau-txt mr-20 mb-5 text-2xl italic'>RESTAURANT</p>
                         </div>
                     </div>
                     <div className='flex justify-center m-flex-col md:w-[30%] w-[100%]'>
-                        <div className='h-[70vh] md:w-[100%] w-[70%]    flex items-end justify-end' style={{
-                            backgroundImage: `url(${pastry})`,
-                            backgroundSize: 'cover',
-                            backgroundRepeat: 'no-repeat',
-                            backgroundPosition: 'center'
-                        }}>
+                        <div className='md:h-[70vh] h-[40vh]  md:w-[100%] w-[70%] flex items-end justify-end pastry-bg'
+                            style={{
+                                backgroundImage: `url(${pastry})`,
+                                backgroundSize: 'cover',
+                                backgroundRepeat: 'no-repeat',
+                                backgroundPosition: 'center'
+                            }}>
                             <p className='restau-txt mr-20 mb-5 text-2xl italic'>LOBBY CAFE</p>
                         </div>
                     </div>
                     <div className='flex justify-center m-flex-col md:w-[30%] w-[100%]'>
-                        <div className='h-[70vh] md:w-[100%] w-[70%] text-white flex items-end justify-end' style={{
-                            backgroundImage: `url(${liquor})`,
-                            backgroundSize: 'cover',
-                            backgroundRepeat: 'no-repeat',
-                            backgroundPosition: 'center'
-                        }}>
+                        <div className='md:h-[70vh] h-[40vh] md:w-[100%] w-[70%] text-white flex items-end justify-end liquor-bg'
+                            style={{
+                                backgroundImage: `url(${liquor})`,
+                                backgroundSize: 'cover',
+                                backgroundRepeat: 'no-repeat',
+                                backgroundPosition: 'center'
+                            }}>
                             <p className='restau-txt mr-10 mb-5 text-2xl italic'>SPORTS BAR</p>
                         </div>
                     </div>
                 </div>
+
+                <style jsx>{`
+                    .restaurant-bg:hover,
+                    .pastry-bg:hover,
+                    .liquor-bg:hover {
+                        background-color: black;
+                        opacity: 0.6; /* Adjust opacity as desired */
+                        transition: opacity 0.3s ease; /* Add transition for smoothness */
+                    }
+                `}</style>
+
 
 
 

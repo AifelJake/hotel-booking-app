@@ -155,7 +155,7 @@ const Room = () => {
 
     const toggleShowMobileSelectRooms = () => {
         dispatch({ type: 'TOGGLE_SHOW_MOBILE_MODAL' })
-        console.log('clicked')
+
     }
 
     const calculateStayDuration = () => {
@@ -297,12 +297,19 @@ const Room = () => {
                     <div className='flex text-[0.8em]'>
                         <div className='w-[40px]'>
                             <p>Adults:</p>
-                            <input type="number" name='adults' className='border-2 w-[40px] h-[35px]' onChange={handleAdultsChange} />
+                            <input 
+                            type="number" 
+                            name='adults' 
+                            className='border-2 w-[40px] h-[35px]' 
+                            onChange={handleAdultsChange} />
 
                         </div>
                         <div className=' w-[40px] ml-10'>
                             <p>Children:</p>
-                            <input type="number" name='children' className='border-2 w-[40px] h-[35px]' onChange={handleChildrenChange} />
+                            <input type="number" 
+                            name='children' c
+                            lassName='border-2 w-[40px] h-[35px]' 
+                            onChange={handleChildrenChange} />
                         </div>
                     </div>
                 </div>
@@ -357,9 +364,19 @@ const Room = () => {
 
                                     <div className='ml-auto'>
                                         <p className='font-bold '>PHP {room.price}</p>
-                                        <p className='bg-[#A67B5B] text-white rounded-md py-1.5 px-6' onClick={() => handleRoomSelect(room._id, room.name, room.image, room.price, room.moreDescription, room.bed, room.bathroom)}>SELECT</p>
+                                        <p className='bg-[#A67B5B] text-white rounded-md py-1.5 px-6' 
+                                        onClick={() => 
+                                        handleRoomSelect(room._id, 
+                                        room.name, 
+                                        room.image, 
+                                        room.price, 
+                                        room.moreDescription, 
+                                        room.bed, 
+                                        room.bathroom)}>SELECT</p>
+                                     
                                     </div>
                                 </div>
+                                {!isSingleError && <p className="text-red-500">{error}</p>}
 
                                 {room.showMore && (
                                     <>
@@ -377,10 +394,19 @@ const Room = () => {
 
                 </div>
 
-                <div className='hidden md:flex min-w-[30%]'>
-                    <SelectedRooms checkInDate={checkInDate} checkOutDate={checkOutDate} numberOfAdults={numberOfAdults} numberOfChildren={numberOfChildren} selectedRooms={selectedRooms} calculateStayDuration={calculateStayDuration} calculateTotalPrice={calculateTotalPrice} />
-
+                <div className='hidden sm:block md:min-w-[30%]'>
+                    <SelectedRooms
+                        checkInDate={checkInDate}
+                        checkOutDate={checkOutDate}
+                        numberOfAdults={numberOfAdults}
+                        numberOfChildren={numberOfChildren}
+                        selectedRooms={selectedRooms}
+                        calculateStayDuration={calculateStayDuration}
+                        calculateTotalPrice={calculateTotalPrice}
+                        error={error}
+                    />
                 </div>
+
                 {/* BOOKED/RESERVATION SECTION */}
 
             </div>
@@ -418,11 +444,26 @@ const Room = () => {
                 />
             )}
 
+
+
             {
                 showMobileSelectRooms && (
-                    <SelectedRooms checkInDate={checkInDate} checkOutDate={checkOutDate} numberOfAdults={numberOfAdults} numberOfChildren={numberOfChildren} selectedRooms={selectedRooms} calculateStayDuration={calculateStayDuration} calculateTotalPrice={calculateTotalPrice} handleRoomDeselect={handleRoomDeselect} toggleShowMobileSelectRooms={toggleShowMobileSelectRooms}/>
+
+                    <div className='w-[100%] md:hidden fixed inset-0 z-50 overflow-y-auto bg-white'>
+                        <SelectedRooms 
+                        checkInDate={checkInDate} 
+                        checkOutDate={checkOutDate} 
+                        numberOfAdults={numberOfAdults} 
+                        numberOfChildren={numberOfChildren} 
+                        selectedRooms={selectedRooms} 
+                        calculateStayDuration={calculateStayDuration} 
+                        calculateTotalPrice={calculateTotalPrice} 
+                        handleRoomDeselect={handleRoomDeselect} 
+                        toggleShowMobileSelectRooms={toggleShowMobileSelectRooms} />
+                    </div>
                 )
             }
+
 
             {loading && (
                 <Backdrop
