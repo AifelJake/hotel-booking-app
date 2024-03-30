@@ -99,7 +99,8 @@ const Dashboard = () => {
   };
 
   const { showAddRoomModal, rooms, loading, showUpdateRoomModal, roomsUpdate } = state;
-  console.log(roomsUpdate)
+ 
+  
 
   return (
     <>
@@ -136,11 +137,14 @@ const Dashboard = () => {
                       </div>
                     </td>
                     <td className="border border-gray-400 flex justify-center">
-                      <img
-                        src={'http://localhost:4002/images/' + room.image}
-                        className='h-[15rem] w-[20rem]'
-                        alt="rooms"
-                      />
+                      
+                    {room.imageContainer.length > 0 && (
+                        <img
+                          src={`http://localhost:4002/images/${room.imageContainer[0].images}`}
+                          className='h-[15rem] w-[20rem]'
+                          alt="rooms"
+                        />
+                      )}
                     </td>
                     <td className="border border-gray-400 px-4 py-2 w-[20%]">
                       <p>{room.description}</p>

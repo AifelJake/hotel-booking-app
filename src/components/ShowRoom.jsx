@@ -1,14 +1,14 @@
 import React from 'react';
-import roomOne from "../assets/img/room1.jpg"
+import { Carousel } from "@material-tailwind/react";
 
 const Modal = ({ imageUrl, onClose, onPrev, onNext }) => {
   return (
     <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center z-50">
       {/* Background overlay */}
       <div className="fixed top-0 left-0 w-full h-full bg-black opacity-90"></div>
-      
+
       {/* Modal content */}
-      <div className=" rounded-lg  max-w-sm relative z-10 flex justify-center items-center">
+      <div className="rounded-lg max-w-sm relative z-10 flex justify-center items-center">
         <button
           className="absolute top-0 text-[3rem] left-0 p-2 text-white hover:text-gray-800"
           onClick={onPrev}
@@ -29,7 +29,18 @@ const Modal = ({ imageUrl, onClose, onPrev, onNext }) => {
         >
           Close
         </button>
-        <img src={imageUrl} alt="Modal" className="w-full h-auto" />
+        <div style={{ width: '500px', height: '500px' }}>
+          <Carousel>
+            {imageUrl.map((image, index) => (
+              <img
+                key={index}
+                src={`http://localhost:4002/images/${image.images}`}
+                className='object-cover w-full h-full'
+                alt="rooms"
+              />
+            ))}
+          </Carousel>
+        </div>
       </div>
     </div>
   );

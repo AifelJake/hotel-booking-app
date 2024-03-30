@@ -2,7 +2,8 @@ import { useState } from 'react';
 import './App.css';
 import { Route, Routes, BrowserRouter } from 'react-router-dom';
 import Home from './pages/Home';
-import Room from './pages/Room';
+import BookRoom from './pages/BookRoom';
+import Rooms from './pages/Room';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import Activities from './pages/Activities';
@@ -14,6 +15,8 @@ import Register from './pages/Register';
 import ShowRoom from './components/ShowRoom';
 import UpdateProduct from './components/UpdateProduct';
 import SelectedRooms from './components/SelectedRooms';
+
+import TryReg from './components/TryReg';
 
 function App() {
   const [count, setCount] = useState(0);
@@ -40,12 +43,13 @@ const unsetUser = () => {
         {/* testing */}
       <Route path="/update" element={<UpdateProduct />} />
       <Route path="/select" element={<SelectedRooms/>} />
+      <Route path="/try" element={<TryReg/>} />
 
-
+      <Route path="/rooms" element={<Rooms/>} />
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/rooms" element={<Room />} />
+        <Route path="/bookrooms" element={<BookRoom />} />
         <Route path="/show" element={<ShowRoom />} />
         <Route path='/activities' element={<Activities />} />
         <Route path='/dashboard' element={<Dashboard/>} />

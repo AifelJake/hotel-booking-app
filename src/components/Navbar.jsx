@@ -14,7 +14,7 @@ const Navbar = () => {
   // Array containing navigation items
   const navItems = [
     { id: 1, text: 'Home', path: '/' },
-    { id: 2, text: 'Rooms', path: '/rooms' },
+    { id: 2, text: 'Rooms', path: '/bookrooms' },
     { id: 3, text: 'Activities', path: '/activities' },
     { id: 4, text: 'Dashboard', path: '/dashboard' },
     { id: 5, text: 'Login', path: '/login' },

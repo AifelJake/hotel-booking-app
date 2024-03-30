@@ -12,7 +12,7 @@ module.exports = withMT({
   theme: {
     extend: {
       fontFamily: {
-        sans: ['Graphik', 'sans-serif'],
+        sans: ['Poppins', 'sans-serif'],
         serif: ['Merriweather', 'serif'],
         lato: ['Lato', 'sans-serif'],
         roboto: ['Roboto', 'sans-serif'],
